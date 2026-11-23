@@ -1,0 +1,373 @@
+'use client';
+
+import { useCallback, useEffect, useRef, useState } from 'react';
+import type { TickerItem, MarketQuote } from '@/lib/content';
+
+/**
+ * Market data ticker — compact commodity cards after the client mobile
+ * reference (359×474): white bar under the black header, market-menu glyph
+ * pinned left (outside the moving region), dark two-row cards
+ * [name | icon] / [price ▲ change (percent)].
+ *
+ * Motion (client request): the row is a SEAMLESS RIGHT-TO-LEFT marquee —
+ * like the live site's original loop — and it is draggable: press and move
+ * horizontally to scrub the cards in either direction; on release the
+ * right-to-left loop resumes. Implementation:
+ *  - the card set is rendered 3× (`.pt-ticker-set`); the loop period is the
+ *    offset distance between the first two sets (width + gap, measured at
+ *    runtime, breakpoint-independent);
+ *  - a rAF loop advances `translate3d` by a time-based speed and wraps the
+ *    offset into [-period, 0) — with 3 copies any viewport up to twice the
+ *    set width (≈5300px) is always covered, so the wrap is invisible;
+ *  - Pointer Events drive the scrubbing (mouse + touch; `touch-action:
+ *    pan-y` keeps vertical page scrolling native), pointer capture keeps
+ *    the gesture alive outside the bar, and the loop pauses only while a
+ *    drag is active — on release the right-to-left motion resumes at once;
+ *  - the marquee runs on EVERY device (client report: the strip sat frozen
+ *    on some phones). Cause: the old build parked the loop whenever the OS
+ *    matched `prefers-reduced-motion: reduce` — Android "Remove animations",
+ *    Samsung "Reduce animations" and iOS Reduce Motion all map to it, so
+ *    those handsets showed a dead bar. The ticker is the delivery mechanism
+ *    for the live prices themselves, so the auto-scroll is now
+ *    unconditional; drag-to-browse remains the motion-free interaction.
+ *
+ * Data integrity (master prompt §07):
+ *  - product names/icons come from the content layer (ticker.items);
+ *  - prices/changes come from the project's REAL market source
+ *    (market.petrotimes.ir/fetch_prices.php) via the server route /api/market;
+ *  - nothing is hardcoded: when the upstream publishes no value (it currently
+ *    answers "N/A" for every product) the card shows an N/A unavailable state;
+ *  - no fabricated feed, no demo values.
+ *
+ * Display order: the three petrochemical cards of the reference (methanol,
+ * polyethylene, urea) lead the row; every other product of the dataset
+ * follows in data order and stays reachable through the loop/scrub.
+ */
+
+/* circular card icons (reference form); the data-driven item.icon remains
+   the fallback for any product without a dedicated card icon */
+const CARD_ICONS: Record<string, string> = {
+  methanol: '/assets/icons/ticker/card-methanol.svg',
+  polyethylene: '/assets/icons/ticker/card-polyethylene.svg',
+  urea: '/assets/icons/ticker/card-urea.svg',
+};
+
+const PRIORITY = ['methanol', 'polyethylene', 'urea'];
+
+/* copies of the card set for the seamless wrap — 3 covers viewports up to
+   twice the set width (the dataset is the fixed 15-product contract, so one
+   set is ≈1.7k/2.7k px wide at mobile/desktop breakpoints) */
+const LOOP_COPIES = 3;
+
+/* auto-scroll speed, px per second, right-to-left */
+const SCROLL_SPEED = 30;
+
+export function MarketTicker({ items }: { items: TickerItem[] }) {
+  const [quotes, setQuotes] = useState<Record<string, MarketQuote> | null>(null);
+  const [failed, setFailed] = useState(false);
+  const alive = useRef(true);
+
+  useEffect(() => {
+    alive.current = true;
+    const load = async () => {
+      try {
+        const res = await fetch('/api/market', { cache: 'no-store' });
+        if (!res.ok) throw new Error(`market ${res.status}`);
+        const json = (await res.json()) as { items?: MarketQuote[] };
+        const map: Record<string, MarketQuote> = {};
+        for (const q of json.items ?? []) map[q.key] = q;
+        if (!alive.current) return;
+        setQuotes(map);
+        setFailed(false);
+      } catch {
+        if (alive.current) setFailed(true);
+      }
+    };
+    load();
+    const timer = setInterval(load, 30000);
+    return () => {
+      alive.current = false;
+      clearInterval(timer);
+    };
+  }, []);
+
+  /* reference order (methanol → polyethylene → urea) first, remaining
+     products in data order after them (stable sort) */
+  const rank = (key: string) => {
+    const i = PRIORITY.indexOf(key);
+    return i === -1 ? PRIORITY.length : i;
+  };
+  const ordered = [...items].sort((a, b) => rank(a.key) - rank(b.key));
+
+  /* ------------------------------------------------ loop machinery ------ */
+  const viewportRef = useRef<HTMLDivElement | null>(null);
+  const trackRef = useRef<HTMLDivElement | null>(null);
+  const posRef = useRef(0);
+  const periodRef = useRef(0); /* one set width + gap, px */
+  const draggingRef = useRef(false);
+  const dragStartX = useRef(0);
+  const dragStartPos = useRef(0);
+  const [dragging, setDragging] = useState(false);
+
+  /* The applied offset is snapped to whole CSS pixels: the float accumulator
+     stays exact (time-based), but translate3d never lands on a half-pixel —
+     fractional offsets make the compositor re-sample glyphs/card edges every
+     frame (subpixel AA), which reads as broken "chunky" pixels while the
+     row slides. 30px/s moves at most 1px per step, so rounding is invisible
+     in motion but keeps text and card borders on the pixel grid. */
+  const applyPos = useCallback(() => {
+    const track = trackRef.current;
+    if (track) track.style.transform = `translate3d(${Math.round(posRef.current)}px, 0, 0)`;
+  }, []);
+
+  /* wrap the offset into [-period, 0) so any drag position lands on the
+     equivalent seamless spot */
+  const normalize = useCallback(() => {
+    const period = periodRef.current;
+    if (period <= 0) return;
+    while (posRef.current <= -period) posRef.current += period;
+    while (posRef.current > 0) posRef.current -= period;
+    applyPos();
+  }, [applyPos]);
+
+  /* Mobile motion hardening (client report: stutter at the strip edges where
+     cards cross the clip). `width: max-content` resolves to fractional
+     glyph-advance widths — every card edge then sits on a subpixel phase,
+     so the integer-snapped marquee transform keeps re-sampling edges while
+     a card crosses the clip. Fix: snap every card's natural width UP to a
+     whole CSS pixel (ceil — the box always contains the full row, so no
+     data is ever clipped; the §09 min-widths still clamp from below).
+     Desktop/tablet keep their fixed flex-basis widths: there the inline
+     width is cleared (and would be ignored anyway — basis ≠ auto). */
+  const snapCardWidths = useCallback(() => {
+    const track = trackRef.current;
+    if (!track) return;
+    const cards = Array.from(track.querySelectorAll<HTMLElement>('.pt-ticker-card'));
+    if (window.matchMedia('(min-width: 768px)').matches) {
+      for (const el of cards) {
+        if (el.style.width) el.style.width = '';
+      }
+      return;
+    }
+    for (const el of cards) el.style.width = ''; /* clear → natural max-content */
+    const widths = cards.map((el) => el.getBoundingClientRect().width); /* read pass */
+    for (let i = 0; i < cards.length; i++) {
+      cards[i].style.width = `${Math.ceil(widths[i])}px`; /* write pass: whole px */
+    }
+  }, []);
+
+  /* the loop period = distance between the first two set wrappers
+     (set width + inter-set gap — works for every breakpoint). Measured
+     from getBoundingClientRect (fractional-exact — the current translate
+     shifts both rects equally, so the difference is the exact pitch);
+     the old integer-rounded offsetLeft left a ≤0.5px error that surfaced
+     as a subpixel jump at the loop seam. */
+  const measure = useCallback(() => {
+    const track = trackRef.current;
+    if (!track || track.children.length < 2) return;
+    const a = track.children[0] as HTMLElement;
+    const b = track.children[1] as HTMLElement;
+    const period = b.getBoundingClientRect().left - a.getBoundingClientRect().left;
+    if (period > 0) periodRef.current = period;
+    normalize();
+  }, [normalize]);
+
+  /* snap widths first, then re-measure the period (widths change the pitch) */
+  const remeasure = useCallback(() => {
+    snapCardWidths();
+    measure();
+  }, [snapCardWidths, measure]);
+
+  /* keep the period fresh: mount, viewport resize, and any layout change
+     inside the row (quotes arriving, fonts loading) via ResizeObserver.
+     The RO callback is measure-only (snap is idempotent; letting it run
+     here too would just add one redundant pass per resize). */
+  useEffect(() => {
+    remeasure();
+    const ro = new ResizeObserver(measure);
+    if (trackRef.current) ro.observe(trackRef.current);
+    if (viewportRef.current) ro.observe(viewportRef.current);
+    window.addEventListener('resize', remeasure);
+    /* widths depend on the real font metrics — re-snap once fonts land —
+       and again when the phone/desktop breakpoint flips */
+    let alive = true;
+    document.fonts?.ready.then(() => {
+      if (alive) remeasure();
+    });
+    const mq = window.matchMedia('(min-width: 768px)');
+    const onFlip = () => remeasure();
+    mq.addEventListener?.('change', onFlip);
+    return () => {
+      alive = false;
+      ro.disconnect();
+      window.removeEventListener('resize', remeasure);
+      mq.removeEventListener?.('change', onFlip);
+    };
+  }, [remeasure, measure]);
+
+  /* quotes arriving change card content → card widths change → re-snap */
+  useEffect(() => {
+    remeasure();
+  }, [remeasure, quotes, failed]);
+
+  /* auto-scroll: right-to-left, time-based (frame-rate independent),
+     paused ONLY while an active drag scrubs the row. The old build also
+     parked the loop under `prefers-reduced-motion: reduce` — that is what
+     froze the bar on phones whose OS enables an animations-off
+     accessibility toggle (client report "static on some mobiles"). The
+     marquee carries the live prices, so it now runs unconditionally; the
+     pointer drag stays available as the reduced-motion browsing mode. */
+  useEffect(() => {
+    let raf = 0;
+    let last: number | null = null;
+    const tick = (ts: number) => {
+      if (last === null) last = ts;
+      const dt = Math.min(ts - last, 100); /* clamp tab-switch jumps */
+      last = ts;
+      if (!draggingRef.current && periodRef.current > 0) {
+        posRef.current -= (SCROLL_SPEED * dt) / 1000;
+        normalize();
+      }
+      raf = requestAnimationFrame(tick);
+    };
+    raf = requestAnimationFrame(tick);
+    return () => cancelAnimationFrame(raf);
+  }, [normalize]);
+
+  /* ------------------------------------------------ scrubbing ----------- */
+  const onPointerDown = (e: React.PointerEvent<HTMLDivElement>) => {
+    if (e.pointerType === 'mouse' && e.button !== 0) return;
+    draggingRef.current = true;
+    dragStartX.current = e.clientX;
+    dragStartPos.current = posRef.current;
+    setDragging(true);
+    viewportRef.current?.setPointerCapture(e.pointerId);
+  };
+  const onPointerMove = (e: React.PointerEvent<HTMLDivElement>) => {
+    if (!draggingRef.current) return;
+    posRef.current = dragStartPos.current + (e.clientX - dragStartX.current);
+    normalize();
+  };
+  const endDrag = (e: React.PointerEvent<HTMLDivElement>) => {
+    if (!draggingRef.current) return;
+    draggingRef.current = false;
+    setDragging(false);
+    const vp = viewportRef.current;
+    if (vp && vp.hasPointerCapture(e.pointerId)) vp.releasePointerCapture(e.pointerId);
+  };
+
+  return (
+    <div className="pt-ticker-widget" data-testid="market-ticker">
+      <div className="pt-ticker-bar" dir="ltr">
+        {/* market-menu glyph — the project has no market product-list
+            capability, so it stays the inert visual element of the reference
+            (aria-hidden), not a duplicate of the main menu */}
+        <span className="pt-ticker-menu" aria-hidden="true">
+          <span className="inner" />
+          {/* phone geometry reference (Bloomberg mobile screenshot): the
+              market-menu glyph is the thin chevron. Rendered here for every
+              breakpoint; CSS shows it ONLY ≤767 and keeps the three-bar
+              glyph for tablet/desktop untouched. */}
+          <svg className="pt-ticker-caret" viewBox="0 0 11 7" width="11" height="7" focusable="false">
+            <path d="M1 1l4.5 5L10 1" fill="none" stroke="currentColor" strokeWidth="2" />
+          </svg>
+        </span>
+        <div
+          className={`pt-ticker-viewport${dragging ? ' is-dragging' : ''}`}
+          ref={viewportRef}
+          data-testid="ticker-viewport"
+          role="region"
+          aria-label="Market prices — auto-scrolling loop, drag to browse"
+          onPointerDown={onPointerDown}
+          onPointerMove={onPointerMove}
+          onPointerUp={endDrag}
+          onPointerCancel={endDrag}
+        >
+          <div className="pt-ticker-track" ref={trackRef} data-testid="ticker-cards">
+            {Array.from({ length: LOOP_COPIES }, (_, copy) => (
+              <div
+                className="pt-ticker-set"
+                key={copy}
+                aria-hidden={copy > 0 ? true : undefined}
+              >
+                {ordered.map((it) => (
+                  <TickerCard key={it.key} item={it} quote={quotes?.[it.key]} />
+                ))}
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+/** parse a raw upstream value ("49.00", "+49.00", "-1.2", "N/A") to a number */
+function parseNum(v: string | null | undefined): number | null {
+  if (v == null) return null;
+  const m = /-?\d+(?:\.\d+)?/.exec(String(v).replace(/,/g, ''));
+  if (!m) return null;
+  const n = Number(m[0]);
+  return Number.isFinite(n) ? n : null;
+}
+
+function TickerCard({ item, quote }: { item: TickerItem; quote?: MarketQuote }) {
+  const price = quote?.price ?? null;
+  const change = quote?.change ?? null;
+  const percent = quote?.percent ?? null;
+
+  /* master prompt — desktop width classes: short/medium product names get
+     the compact 224px card, standard/long names the standard 252px card.
+     The class only changes flex-basis at ≥1025 (CSS); mobile/tablet keep
+     their own measured widths. Name length is the stable content signal —
+     market values change per fetch, names do not. */
+  const compact = item.name.trim().length <= 9;
+
+  const priceNum = parseNum(price);
+  const changeNum = parseNum(change);
+  const unavailable =
+    quote === undefined /* still loading */ ||
+    priceNum === null ||
+    changeNum === null;
+
+  const direction = unavailable || changeNum === 0 ? 'flat' : changeNum > 0 ? 'up' : 'down';
+
+  return (
+    <div
+      className={`pt-ticker-card${compact ? ' is-compact' : ''}`}
+      data-key={item.key}
+    >
+      <div className="pt-ticker-card-top">
+        <span className="pt-ticker-name">{item.name}</span>
+        <img
+          className="pt-ticker-icon"
+          src={CARD_ICONS[item.key] ?? item.icon}
+          alt=""
+          width={14}
+          height={14}
+          /* eager + async decode: `lazy` defers offscreen copies, and the
+             marquee brings cards in via transform — a lazily-held icon
+             popping/decoding at the strip edge reads as a stutter exactly
+             where cards cross. 45 same-URL refs hit cache; cost ≈ 0. */
+          loading="eager"
+          decoding="async"
+          draggable={false}
+        />
+      </div>
+      <div className="pt-ticker-row">
+        {unavailable ? (
+          <span className="pt-ticker-na" data-testid="ticker-na">
+            {quote === undefined ? '…' : 'N/A'}
+          </span>
+        ) : (
+          <>
+            <span className="pt-ticker-price">{price}</span>
+            <span className={`pt-ticker-change ${direction}`}>
+              {direction === 'up' ? '▲' : direction === 'down' ? '▼' : '•'} {change} ({percent})
+            </span>
+          </>
+        )}
+      </div>
+    </div>
+  );
+}

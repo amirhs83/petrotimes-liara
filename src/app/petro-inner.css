@@ -1,0 +1,497 @@
+/* ============================================================================
+   PETRO TIMES — INNER PAGES STYLESHEET
+   /news/[slug] · /category/[slug] · /tag/[slug] · /all-post · /search · static
+
+   Extends petro.css (imported by the (public) layout) with the SAME design
+   language and tokens: --c-contrast-* scale, --title-* sizes, IRANSans body,
+   Barlow meta/ui, block-head chips. The live reference site had only the
+   homepage captured, so every inner-page metric below is derived from the
+   live tokens (never invented colors or fonts).
+   ========================================================================== */
+
+/* ------------------------------------------------------------ inner base --- */
+/* page top spacing: the header+ticker chrome is followed by the content
+   block flow — the live site's main content starts 50px below the ticker */
+.main-wrap { padding-top: 50px; }
+
+/* sticky footer (inner pages only): the shell is a flex column so the black
+   footer sits at the viewport bottom on short pages (empty search results)
+   and is pushed down naturally on long ones — zero effect on the homepage,
+   which keeps its original block flow */
+.pt-inner-shell {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+.pt-inner-shell > .pt-footer { margin-top: auto; }
+
+/* ---------------------------------------------------------- breadcrumbs --- */
+.pt-breadcrumb {
+  font-family: var(--body-font);
+  font-size: 12px;
+  line-height: 18px;
+  color: var(--c-contrast-450);
+  margin-bottom: 18px;
+}
+.pt-breadcrumb ul { display: flex; flex-wrap: wrap; align-items: center; }
+.pt-breadcrumb li { display: inline-flex; align-items: center; }
+.pt-breadcrumb li + li::before {
+  content: "»";
+  margin: 0 7px;
+  color: var(--c-contrast-300);
+  font-size: 11px;
+}
+.pt-breadcrumb a { color: var(--c-contrast-450); }
+.pt-breadcrumb a:hover { color: var(--c-main); }
+.pt-breadcrumb .current {
+  color: var(--c-contrast-800);
+  font-weight: 500;
+  /* single line — the long article title must not wrap the trail */
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  max-width: 520px;
+}
+
+/* --------------------------------------------------------- article head --- */
+.pt-article { margin-bottom: var(--block-wrap-mb); }
+
+.pt-article-kicker {
+  color: var(--c-contrast-450);
+  font-size: 13px;
+  font-weight: 600;
+  line-height: 20px;
+  margin-bottom: 8px;
+}
+
+.pt-article-title {
+  font-size: var(--title-size-l);          /* 25px — SmartMag single title */
+  font-weight: 700;
+  line-height: 1.4;
+  color: var(--c-headings);
+  margin: 0 0 12px;
+}
+
+/* single-post meta row — same recipe as .pt-post-meta (Barlow 12px,
+   "cat — date" with the CSS-drawn — separator) + a views item */
+.pt-article-meta {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  font-family: var(--ui-font);
+  font-size: 12px;
+  color: var(--c-post-meta);
+  line-height: 18px;
+  margin-bottom: 4px;
+}
+.pt-article-meta .meta-item { display: inline; }
+.pt-article-meta .meta-item + .meta-item::before {
+  content: "—";
+  padding: 0 4px;
+  display: inline-block;
+  transform: scale(0.916);
+}
+.pt-article-meta a.post-cat-link {
+  color: var(--c-links);
+  font-weight: 600;
+  font-size: 11px;
+  letter-spacing: normal;
+}
+.pt-article-meta a.post-cat-link:hover { color: var(--c-main); }
+.pt-article-meta .meta-item.date { font-size: 11px; }
+.pt-article-meta .meta-item.views { font-size: 11px; direction: rtl; }
+.pt-article-meta .meta-item.views .pt-icon { font-size: 10px; margin-inline-end: 3px; }
+
+/* lead paragraph — the intro the CMS stores as `lead` */
+.pt-article-lead {
+  color: var(--c-contrast-800);
+  font-size: 16px;
+  line-height: 1.9;
+  font-weight: 500;
+  margin: 14px 0 0;
+}
+
+/* ------------------------------------------------------------ hero media --- */
+.pt-article-figure { margin: 24px 0 0; }
+.pt-article-figure .pt-figure-link { display: block; }
+.pt-article-figure img {
+  display: block;
+  width: 100%;
+  height: auto;
+  background: var(--c-contrast-50);
+}
+.pt-article-figure figcaption {
+  font-size: 12px;
+  line-height: 20px;
+  color: var(--c-contrast-450);
+  text-align: center;
+  padding-top: 8px;
+}
+
+/* --------------------------------------------------------- article body --- */
+.pt-article-body {
+  margin-top: 26px;
+  font-size: 15px;
+  line-height: 2;
+  color: var(--c-contrast-700);
+  text-align: justify;
+  overflow-wrap: break-word;
+  word-break: break-word;
+}
+.pt-article-body p { margin: 0 0 16px; }
+.pt-article-body p:last-child { margin-bottom: 0; }
+.pt-article-body h2,
+.pt-article-body h3,
+.pt-article-body h4 {
+  color: var(--c-headings);
+  font-weight: 700;
+  line-height: 1.4;
+  margin: 26px 0 12px;
+}
+.pt-article-body h2 { font-size: 20px; }
+.pt-article-body h3 { font-size: 18px; }
+.pt-article-body h4 { font-size: 16px; }
+.pt-article-body a {
+  color: var(--c-main);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  text-decoration-color: var(--c-contrast-300);
+}
+.pt-article-body a:hover { text-decoration-color: var(--c-main); }
+.pt-article-body ul,
+.pt-article-body ol {
+  margin: 0 0 16px;
+  padding-inline-start: 22px;
+}
+.pt-article-body ul { list-style: disc; }
+.pt-article-body ol { list-style: decimal; }
+.pt-article-body li { margin-bottom: 6px; }
+.pt-article-body blockquote {
+  margin: 20px 0;
+  padding: 14px 20px;
+  border-inline-start: 3px solid var(--c-main);
+  background: var(--c-contrast-50);
+  color: var(--c-contrast-800);
+}
+.pt-article-body blockquote p:last-child { margin-bottom: 0; }
+.pt-article-body img {
+  max-width: 100%;
+  height: auto;
+  display: block;
+  margin: 20px auto;
+}
+.pt-article-body figure { margin: 20px 0; }
+.pt-article-body figcaption {
+  font-size: 12px;
+  line-height: 20px;
+  color: var(--c-contrast-450);
+  text-align: center;
+  padding-top: 8px;
+}
+.pt-article-body hr {
+  border: 0;
+  border-top: 1px solid var(--c-separator);
+  margin: 26px 0;
+}
+.pt-article-body pre,
+.pt-article-body code {
+  font-family: var(--ui-font);
+  font-size: 13px;
+  direction: ltr;
+  text-align: left;
+  background: var(--c-contrast-50);
+  border: 1px solid var(--c-separator);
+}
+.pt-article-body pre {
+  padding: 14px 16px;
+  overflow-x: auto;
+  margin: 20px 0;
+}
+.pt-article-body code { padding: 1px 5px; }
+.pt-article-body pre code { padding: 0; background: none; border: 0; }
+
+/* uploaded video (VideoType.UPLOAD) */
+.pt-article-video {
+  width: 100%;
+  aspect-ratio: 16 / 9;
+  background: #000;
+  display: block;
+  margin: 24px 0;
+}
+
+/* external embeds (Aparat / YouTube) — 16:9 frame */
+.pt-video-embed {
+  position: relative;
+  display: block;
+  width: 100%;
+  padding-bottom: 56.25%;
+  background: #000;
+  margin: 24px 0;
+}
+.pt-video-embed iframe {
+  position: absolute;
+  top: 0; right: 0;
+  width: 100%;
+  height: 100%;
+  border: 0;
+}
+
+/* ------------------------------------------------------------ share row --- */
+/* Article share targets (server-rendered links + one client copy button).
+   Geometry: 40px square bordered buttons, ink hover — the same recipe as
+   the tags row it sits after, so the article rhythm stays intact. */
+.pt-share-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 10px;
+  margin-top: 26px;
+  padding-top: 20px;
+  border-top: 1px solid var(--c-separator);
+}
+.pt-share-label {
+  font-family: var(--ui-font);
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--c-contrast-450);
+  letter-spacing: .04em;
+  margin-inline-end: 4px;
+}
+.pt-share-links {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+}
+.pt-share-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 38px;
+  height: 38px;
+  border: 1px solid var(--c-contrast-200);
+  color: var(--c-contrast-700);
+  font-size: 15px;
+  line-height: 1;
+  background: #fff;
+  transition: background .15s ease, color .15s ease, border-color .15s ease;
+}
+.pt-share-btn .pt-icon { font-size: 15px; line-height: 1; }
+.pt-share-btn:hover {
+  background: var(--c-main);
+  border-color: var(--c-main);
+  color: #fff;
+}
+.pt-share-btn:focus-visible {
+  outline: 2px solid var(--c-main);
+  outline-offset: 2px;
+}
+.pt-share-btn.is-copied {
+  background: var(--c-main);
+  border-color: var(--c-main);
+  color: #fff;
+}
+.pt-share-toast {
+  font-family: var(--ui-font);
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--c-main);
+  opacity: 0;
+  transform: translateX(4px);
+  transition: opacity .2s ease, transform .2s ease;
+}
+.pt-share-toast.is-visible { opacity: 1; transform: none; }
+
+/* -------------------------------------------------------- related block --- */
+.pt-related { margin-top: 40px; }
+.pt-related-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20px 26px;
+}
+.pt-related-grid .pt-small-post { align-items: flex-start; }
+
+/* --------------------------------------------------------- archive pages --- */
+.pt-archive { margin-bottom: var(--block-wrap-mb); }
+
+/* archive page head — block-head-e2 with an optional count chip */
+.pt-archive-head { margin-bottom: 30px; }
+/* the e2 line is an explicit child here so the count chip lands at the row
+   end; the default ::after line of block-head-e is disabled for this head */
+.pt-archive-head.pt-block-head-e::after { display: none; }
+.pt-archive-head .pt-head-line {
+  flex: 1 1 auto;
+  margin-top: 1px;
+  height: var(--line-weight);
+  background: var(--c-separator2);
+  margin-right: var(--inner-pad);
+}
+.pt-archive-head .heading { margin-inline-end: 0; }
+.pt-archive-head .pt-count {
+  font-family: var(--ui-font);
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--c-contrast-450);
+  white-space: nowrap;
+}
+.pt-archive-head .pt-search-term { color: var(--c-main); }
+
+/* sidebar widget loop — same 18px row rhythm as the live playlist loop */
+.pt-widget-loop {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+
+/* archive loop — first post as hero (page 1 only), the rest as hairline
+   rows reusing the standard small-post card exactly like the live columns */
+.pt-archive-hero .pt-media { margin-bottom: 16px; }
+.pt-archive-hero .pt-post-title { font-size: 22px; font-weight: 700; margin: 0 0 9px; }
+
+.pt-archive-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+}
+.pt-archive-list .pt-small-post {
+  position: relative;
+  padding-block: 18px;
+}
+.pt-archive-list .pt-small-post::after {
+  content: "";
+  position: absolute;
+  right: 0;
+  width: 100%;
+  bottom: 0;
+  border-bottom: 1px solid var(--c-separator);
+}
+.pt-archive-list .pt-small-post:last-child::after { display: none; }
+.pt-archive-list .pt-small-post:first-child { padding-top: 0; }
+
+/* archive empty state */
+.pt-archive-empty {
+  border: 1px solid var(--c-separator);
+  background: var(--c-contrast-10);
+  padding: 40px 24px;
+  text-align: center;
+  color: var(--c-contrast-500);
+  font-size: 15px;
+  line-height: 1.9;
+}
+
+/* ------------------------------------------------------------ pagination --- */
+.pt-pagination {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  margin-top: 34px;
+}
+.pt-pagination a,
+.pt-pagination span {
+  min-width: 40px;
+  height: 40px;
+  padding: 0 10px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--ui-font);
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--c-contrast-700);
+  border: 1px solid var(--c-contrast-200);
+  transition: background .15s ease, color .15s ease, border-color .15s ease;
+}
+.pt-pagination .pt-icon { font-size: 12px; }
+.pt-pagination a:hover {
+  background: var(--c-main);
+  border-color: var(--c-main);
+  color: #fff;
+}
+.pt-pagination .is-current {
+  background: var(--c-main);
+  border-color: var(--c-main);
+  color: #fff;
+}
+.pt-pagination .is-disabled {
+  opacity: .45;
+  pointer-events: none;
+}
+.pt-pagination .pt-page-ellipsis {
+  border: 0;
+  min-width: 24px;
+  color: var(--c-contrast-400);
+}
+
+/* --------------------------------------------------------- static pages --- */
+.pt-static-body {
+  font-size: 15px;
+  line-height: 2;
+  color: var(--c-contrast-700);
+  text-align: justify;
+}
+.pt-static-body p { margin: 0 0 16px; }
+.pt-static-body h2 { font-size: 20px; font-weight: 700; color: var(--c-headings); margin: 24px 0 12px; }
+.pt-static-body h3 { font-size: 18px; font-weight: 700; color: var(--c-headings); margin: 22px 0 10px; }
+.pt-static-body ul { list-style: disc; padding-inline-start: 22px; margin: 0 0 16px; }
+.pt-static-body ol { list-style: decimal; padding-inline-start: 22px; margin: 0 0 16px; }
+.pt-static-body a {
+  color: var(--c-main);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  text-decoration-color: var(--c-contrast-300);
+}
+.pt-static-body strong { color: var(--c-contrast-900); }
+.pt-static-body .pt-contact-mail {
+  display: inline-block;
+  font-family: var(--ui-font);
+  font-size: 16px;
+  font-weight: 600;
+  color: var(--c-main);
+  background: var(--c-contrast-50);
+  border: 1px solid var(--c-separator);
+  padding: 10px 18px;
+  margin: 6px 0 18px;
+}
+
+/* inner sidebar reuse — same 356px rail the homepage uses (rule comes from
+   petro.css .pt-sidebar-col > div); the widget stack itself is plain flow */
+.pt-inner-sidebar .pt-widget + .pt-widget { margin-top: 40px; }
+
+/* ---------------------------------------------------------- responsive --- */
+@media (max-width: 1024px) {
+  .pt-breadcrumb .current { max-width: 420px; }
+}
+
+@media (max-width: 767px) {
+  .main-wrap { padding-top: 24px; }
+  .pt-breadcrumb { margin-bottom: 14px; }
+  .pt-breadcrumb .current { max-width: 200px; }
+
+  .pt-article-title { font-size: 20px; line-height: 1.45; }
+  .pt-article-lead { font-size: 15px; line-height: 1.9; }
+  .pt-article-body { font-size: 14px; line-height: 2; margin-top: 20px; }
+  .pt-article-body h2 { font-size: 18px; }
+  .pt-article-body h3 { font-size: 16px; }
+  .pt-article-figure { margin-top: 18px; }
+
+  .pt-article-tags { margin-top: 20px; padding-top: 16px; }
+  .pt-related { margin-top: 30px; }
+  .pt-related-grid { grid-template-columns: 1fr; gap: 16px; }
+
+  .pt-archive-hero .pt-post-title { font-size: 18px; }
+  .pt-archive-list .pt-small-post { padding-block: 14px; }
+  /* the standard ≤767 card rules clamp archive titles to 2 lines (live) */
+  .pt-archive-list .pt-small-post .pt-post-title {
+    font-size: 14px;
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 2;
+    overflow: hidden;
+  }
+
+  .pt-pagination { margin-top: 26px; gap: 5px; }
+  .pt-pagination a,
+  .pt-pagination span { min-width: 36px; height: 36px; font-size: 13px; }
+}

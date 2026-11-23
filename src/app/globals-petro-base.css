@@ -1,0 +1,24 @@
+/* Root-level neutral base — deliberately framework-free.
+ * Tailwind preflight is NOT applied globally (it would alter the pixel-perfect
+ * petro.css cascade). Each subtree owns its styling:
+ *   - public pages  → petro.css  (imported by app/(public)/layout.tsx)
+ *   - admin pages   → globals.css (Tailwind + shadcn tokens, imported by the
+ *                      admin layout)
+ * Only universal, non-destructive rules live here. */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html {
+  -webkit-text-size-adjust: 100%;
+  scroll-behavior: smooth;
+}
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  font-family: var(--font-iransans), Tahoma, Arial, sans-serif;
+  color-scheme: light;
+}

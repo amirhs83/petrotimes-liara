@@ -1,0 +1,643 @@
+{
+  "capturedAt": "2026-11-15T07:19:08.105Z",
+  "source": "https://petrotimes.ir/ (live capture 2026-11-15, Chromium 157, viewport 1920)",
+  "header": {
+    "menu": [
+      {
+        "label": "صفحه اصلی",
+        "href": "/",
+        "current": true
+      },
+      {
+        "label": "نفت",
+        "href": "https://petrotimes.ir/naft/"
+      },
+      {
+        "label": "گاز",
+        "href": "https://petrotimes.ir/gas/"
+      },
+      {
+        "label": "پتروشیمی",
+        "href": "https://petrotimes.ir/petroshimi/"
+      },
+      {
+        "label": "پالایش و پخش",
+        "href": "https://petrotimes.ir/palayesh-va-pakhsh/"
+      },
+      {
+        "label": "بین الملل",
+        "href": "https://petrotimes.ir/bein-al-melal/"
+      },
+      {
+        "label": "همه اخبار",
+        "href": "https://petrotimes.ir/all-post/"
+      },
+      {
+        "label": "Advertise",
+        "href": "#"
+      },
+      {
+        "label": "Magazine",
+        "href": "https://petrotimes.ir/magazine/"
+      }
+    ]
+  },
+  "ticker": {
+    "iframeUrl": "https://market.petrotimes.ir",
+    "items": [
+      {
+        "key": "crude-oil",
+        "name": "Crude oil",
+        "icon": "/assets/icons/ticker/oil.svg"
+      },
+      {
+        "key": "brent-crude-oil",
+        "name": "Brent crude oil",
+        "icon": "/assets/icons/ticker/oil.svg"
+      },
+      {
+        "key": "heating-oil",
+        "name": "Heating oil",
+        "icon": "/assets/icons/ticker/heating-oil.svg"
+      },
+      {
+        "key": "bitumen",
+        "name": "Bitumen",
+        "icon": "/assets/icons/ticker/oil.svg"
+      },
+      {
+        "key": "natural-gas",
+        "name": "Natural gas",
+        "icon": "/assets/icons/ticker/gas.svg"
+      },
+      {
+        "key": "eu-natural-gas",
+        "name": "Eu natural gas",
+        "icon": "/assets/icons/ticker/gas.svg"
+      },
+      {
+        "key": "gasoline",
+        "name": "Gasoline",
+        "icon": "/assets/icons/ticker/gasoline.svg"
+      },
+      {
+        "key": "naphtha",
+        "name": "Naphtha",
+        "icon": "/assets/icons/ticker/naphta.svg"
+      },
+      {
+        "key": "coal",
+        "name": "Coal",
+        "icon": "/assets/icons/ticker/coal.svg"
+      },
+      {
+        "key": "copper",
+        "name": "Copper",
+        "icon": "/assets/icons/ticker/copper.svg"
+      },
+      {
+        "key": "methanol",
+        "name": "Methanol",
+        "icon": "/assets/icons/ticker/methanol.svg"
+      },
+      {
+        "key": "urea",
+        "name": "Urea",
+        "icon": "/assets/icons/ticker/urea.svg"
+      },
+      {
+        "key": "polyethylene",
+        "name": "Polyethylene",
+        "icon": "/assets/icons/ticker/polyethylene.svg"
+      },
+      {
+        "key": "polyvinyl",
+        "name": "Polyvinyl",
+        "icon": "/assets/icons/ticker/vinyl.svg"
+      },
+      {
+        "key": "polypropylene",
+        "name": "Polypropylene",
+        "icon": "/assets/icons/ticker/oil.svg"
+      }
+    ]
+  },
+  "sections": {
+    "heroMain": {
+      "title": "چین از بزرگ‌ترین خریدار PP جهان به رقیب صادراتی تبدیل می‌شود",
+      "eyebrow": "سرپرست وزارت نفت:",
+      "url": "https://petrotimes.ir/%da%86%db%8c%d9%86-%d8%a7%d8%b2-%d8%a8%d8%b2%d8%b1%da%af%d8%aa%d8%b1%db%8c%d9%86-%d8%ae%d8%b1%db%8c%d8%af%d8%a7%d8%b1-pp-%d8%ac%d9%87%d8%a7%d9%86-%d8%a8%d9%87-%d8%b1%d9%82%db%8c%d8%a8-%d8%b5/",
+      "dateText": "۲۹ مرداد ۱۴۰۵ - ۰۹:۰۴",
+      "category": "بین الملل",
+      "categoryUrl": "https://petrotimes.ir/%d8%a8%db%8c%d9%86-%d8%a7%d9%84%d9%85%d9%84%d9%84/",
+      "excerpt": "خالص واردات پلی‌پروپیلن چین در سال گذشته به حدود ۳۰۰ هزار تن سقوط کرد؛ رقمی که فاصله چشمگیری با برآورد حدود ۱.۷ میلیون تنی بازار داشت.",
+      "image": "/assets/images/ChatGPT-Image-Aug-20-2026-10_33_07-AM-768x432.png",
+      "imageFull": "/assets/images/ChatGPT-Image-Aug-20-2026-10_33_07-AM.png"
+    },
+    "heroSecondary": [
+      {
+        "title": "وزیر نفت: نخستین گواهی صرفه‌جویی گاز در قالب قرارداد شرکت‌های کارور صادر شد",
+        "url": "https://petrotimes.ir/%d9%88%d8%b2%db%8c%d8%b1-%d9%86%d9%81%d8%aa-%d9%86%d8%ae%d8%b3%d8%aa%db%8c%d9%86-%da%af%d9%88%d8%a7%d9%87%db%8c-%d8%b5%d8%b1%d9%81%d9%87%d8%ac%d9%88%db%8c%db%8c-%da%af%d8%a7%d8%b2-%d8%af/",
+        "dateText": "۲۸ مرداد ۱۴۰۵ - ۱۸:۵۳",
+        "category": null,
+        "categoryUrl": null,
+        "excerpt": null,
+        "image": "/assets/images/3232250-e1787152982323-150x93.jpg",
+        "imageFull": "/assets/images/3232250-e1787152982323.jpg"
+      },
+      {
+        "title": "عضو کمیسیون انرژی: تولید و توزیع سوخت در شرایط جنگی بی‌وقفه ادامه داشت",
+        "url": "https://petrotimes.ir/%d8%b9%d8%b6%d9%88-%da%a9%d9%85%db%8c%d8%b3%db%8c%d9%88%d9%86-%d8%a7%d9%86%d8%b1%da%98%db%8c-%d8%aa%d9%88%d9%84%db%8c%d8%af-%d9%88-%d8%aa%d9%88%d8%b2%db%8c%d8%b9-%d8%b3%d9%88%d8%ae%d8%aa-%d8%af%d8%b1/",
+        "dateText": "۲۸ مرداد ۱۴۰۵ - ۱۹:۰۵",
+        "category": null,
+        "categoryUrl": null,
+        "excerpt": null,
+        "image": "/assets/images/2215005-e1787153635623-150x97.jpg",
+        "imageFull": "/assets/images/2215005-e1787153635623.jpg"
+      },
+      {
+        "title": "وزیر انرژی تاجیکستان: واردات فرآورده‌های نفتی از ایران را افزایش می‌دهیم",
+        "url": "https://petrotimes.ir/%d9%88%d8%b2%db%8c%d8%b1-%d8%a7%d9%86%d8%b1%da%98%db%8c-%d8%aa%d8%a7%d8%ac%db%8c%da%a9%d8%b3%d8%aa%d8%a7%d9%86%d9%88%d8%a7%d8%b1%d8%af%d8%a7%d8%aa-%d9%81%d8%b1%d8%a2%d9%88%d8%b1%d8%af%d9%87/",
+        "dateText": "۲۸ مرداد ۱۴۰۵ - ۲۰:۴۸",
+        "category": null,
+        "categoryUrl": null,
+        "excerpt": null,
+        "image": "/assets/images/3288376-e1787159904630-150x122.jpg",
+        "imageFull": "/assets/images/3288376-e1787159904630.jpg"
+      },
+      {
+        "title": "مدیرعامل شرکت ملی نفت ایران: آلودگی دریا ارتباطی با تأسیسات نفتی ایران ندارد",
+        "url": "https://petrotimes.ir/%d9%85%d8%af%db%8c%d8%b1%d8%b9%d8%a7%d9%85%d9%84-%d8%b4%d8%b1%da%a9%d8%aa-%d9%85%d9%84%db%8c-%d9%86%d9%81%d8%aa-%d8%a7%db%8c%d8%b1%d8%a7%d9%86-%d8%a2%d9%84%d9%88%d8%af%da%af%db%8c-%d8%af%d8%b1%db%8c/",
+        "dateText": "۲۸ مرداد ۱۴۰۵ - ۲۰:۵۴",
+        "category": null,
+        "categoryUrl": null,
+        "excerpt": null,
+        "image": "/assets/images/n00033027-b-e1787160263308-150x145.jpg",
+        "imageFull": "/assets/images/n00033027-b-e1787160263308.jpg"
+      }
+    ],
+    "tvPlayer": {
+      "title": "بازار نفت در آستانه شوک جدید",
+      "url": "https://petrotimes.ir/%d8%a8%d8%a7%d8%b2%d8%a7%d8%b1-%d9%86%d9%81%d8%aa-%d8%af%d8%b1-%d8%a2%d8%b3%d8%aa%d8%a7%d9%86%d9%87-%d8%b4%d9%88%da%a9-%d8%ac%d8%af%db%8c%d8%af/",
+      "dateText": "۲۹ مرداد ۱۴۰۵ - ۱۴:۴۰",
+      "category": "نفت",
+      "categoryUrl": "https://petrotimes.ir/%d9%86%d9%81%d8%aa/",
+      "excerpt": null,
+      "image": "/assets/images/40-768x426.jpg",
+      "imageFull": "/assets/images/40.jpg"
+    },
+    "tvPlaylist": [
+      {
+        "title": "۲۸ مرداد؛ روایتی کهنه از طمعی تازه",
+        "url": "https://petrotimes.ir/%db%b2%db%b8-%d9%85%d8%b1%d8%af%d8%a7%d8%af%d8%9b-%d8%b1%d9%88%d8%a7%db%8c%d8%aa%db%8c-%da%a9%d9%87%d9%86%d9%87-%d8%a7%d8%b2-%d8%b7%d9%85%d8%b9%db%8c-%d8%aa%d8%a7%d8%b2%d9%87/",
+        "dateText": "۲۹ مرداد ۱۴۰۵ - ۱۵:۲۳",
+        "category": null,
+        "categoryUrl": null,
+        "excerpt": null,
+        "image": "/assets/images/44-150x94.jpg",
+        "imageFull": "/assets/images/44.jpg"
+      },
+      {
+        "title": "تهران و اسلام‌آباد، مرز ۹۰۰ کیلومتری را به خط لوله‌ای برای توسعه ۳۰ میلیارد دلاری تبدیل می‌کنند",
+        "url": "https://petrotimes.ir/%d8%aa%d9%87%d8%b1%d8%a7%d9%86-%d9%88-%d8%a7%d8%b3%d9%84%d8%a7%d9%85%d8%a2%d8%a8%d8%a7%d8%af%d8%8c-%d9%85%d8%b1%d8%b2-%db%b9%db%b0%db%b0-%da%a9%db%8c%d9%84%d9%88%d9%85%d8%aa%d8%b1%db%8c/",
+        "dateText": "۲۹ مرداد ۱۴۰۵ - ۱۳:۵۲",
+        "category": null,
+        "categoryUrl": null,
+        "excerpt": null,
+        "image": "/assets/images/34-150x82.jpg",
+        "imageFull": "/assets/images/34.jpg"
+      },
+      {
+        "title": "پارس جنوبی، نه‌فقط برای امروز، فشارافزایی-تصمیمی برای ماندن",
+        "url": "https://petrotimes.ir/%d9%be%d8%a7%d8%b1%d8%b3-%d8%ac%d9%86%d9%88%d8%a8%db%8c%d8%8c-%d9%86%d9%87%d9%81%d9%82%d8%b7-%d8%a8%d8%b1%d8%a7%db%8c-%d8%a7%d9%85%d8%b1%d9%88%d8%b2%d8%8c-%d9%81%d8%b4%d8%a7%d8%b1%d8%a7%d9%81/",
+        "dateText": "۲۹ مرداد ۱۴۰۵ - ۱۵:۱۸",
+        "category": null,
+        "categoryUrl": null,
+        "excerpt": null,
+        "image": "/assets/images/41-150x84.jpg",
+        "imageFull": "/assets/images/41.jpg"
+      },
+      {
+        "title": "بازسازی پالایشگاه‌های آسیب‌دیده با شتاب در حال انجام است",
+        "url": "https://petrotimes.ir/%d8%a8%d8%a7%d8%b2%d8%b3%d8%a7%d8%b2%db%8c-%d9%be%d8%a7%d9%84%d8%a7%db%8c%d8%b4%da%af%d8%a7%d9%87%d9%87%d8%a7%db%8c-%d8%a2%d8%b3%db%8c%d8%a8%d8%af%db%8c%d8%af%d9%87-%d8%a8%d8%a7/",
+        "dateText": "۲۹ مرداد ۱۴۰۵ - ۱۴:۰۲",
+        "category": null,
+        "categoryUrl": null,
+        "excerpt": null,
+        "image": "/assets/images/36-150x68.jpg",
+        "imageFull": "/assets/images/36.jpg"
+      },
+      {
+        "title": "گام تازه تهران-دوشنبه در مسیر خودکفایی سوختی؛ چراغ سبز برای یک قرارداد بلندمدت انرژی",
+        "url": "https://petrotimes.ir/%da%af%d8%a7%d9%85-%d8%aa%d8%a7%d8%b2%d9%87-%d8%aa%d9%87%d8%b1%d8%a7%d9%86-%d8%af%d9%88%d8%b4%d9%86%d8%a8%d9%87-%d8%af%d8%b1-%d9%85%d8%b3%db%8c%d8%b1-%d8%ae%d9%88%d8%af%da%a9%d9%81%d8%a7%db%8c%db%8c/",
+        "dateText": "۲۹ مرداد ۱۴۰۵ - ۱۴:۱۴",
+        "category": null,
+        "categoryUrl": null,
+        "excerpt": null,
+        "image": "/assets/images/37-150x85.jpg",
+        "imageFull": "/assets/images/37.jpg"
+      }
+    ],
+    "topNewsLabel": {
+      "label": "top news",
+      "article": {
+        "title": "وزیر انرژی ترکیه: آمادگی ترکیه برای کشف نفت و گاز در سوریه",
+        "url": "https://petrotimes.ir/%d9%88%d8%b2%db%8c%d8%b1-%d8%a7%d9%86%d8%b1%da%98%db%8c-%d8%aa%d8%b1%da%a9%db%8c%d9%87-%d8%a2%d9%85%d8%a7%d8%af%da%af%db%8c-%d8%aa%d8%b1%da%a9%db%8c%d9%87-%d8%a8%d8%b1%d8%a7%db%8c-%da%a9%d8%b4%d9%81/",
+        "dateText": "۲۸ مرداد ۱۴۰۵ - ۲۱:۳۰",
+        "category": null,
+        "categoryUrl": null,
+        "excerpt": null,
+        "image": "/assets/images/397891-150x99.jpg",
+        "imageFull": "/assets/images/397891.jpg"
+      }
+    },
+    "topNewsItems": [
+      {
+        "title": "مدیرعامل آرامکو: تنش‌های خاورمیانه۲ میلیارد بشکه نفت هزینه داشت",
+        "url": "https://petrotimes.ir/%d9%85%d8%af%db%8c%d8%b1%d8%b9%d8%a7%d9%85%d9%84-%d8%a2%d8%b1%d8%a7%d9%85%da%a9%d9%88-%d8%aa%d9%86%d8%b4%d9%87%d8%a7%db%8c-%d8%ae%d8%a7%d9%88%d8%b1%d9%85%db%8c%d8%a7%d9%86%d9%87%db%b2-%d9%85/",
+        "dateText": "۲۹ مرداد ۱۴۰۵ - ۰۰:۱۹",
+        "category": null,
+        "categoryUrl": null,
+        "excerpt": null,
+        "image": "/assets/images/Amin_Hassan_Nasser_at_WEF_Special_Meeting_on_Global_Collaboration_Growth_and_Energy_for_Development_2024-e1787172569764-150x97.png",
+        "imageFull": "/assets/images/Amin_Hassan_Nasser_at_WEF_Special_Meeting_on_Global_Collaboration_Growth_and_Energy_for_Development_2024-e1787172569764.png"
+      },
+      {
+        "title": "دبیرکل اوپک:چرا آژانس بین‌المللی انرژی اعتبار تولیدکنندگان خلیج فارس را زیر سؤال می‌برد؟",
+        "url": "https://petrotimes.ir/%d8%af%d8%a8%db%8c%d8%b1%da%a9%d9%84-%d8%a7%d9%88%d9%be%da%a9%da%86%d8%b1%d8%a7-%d8%a2%da%98%d8%a7%d9%86%d8%b3-%d8%a8%db%8c%d9%86%d8%a7%d9%84%d9%85%d9%84%d9%84%db%8c-%d8%a7%d9%86%d8%b1%da%98/",
+        "dateText": "۲۹ مرداد ۱۴۰۵ - ۰۰:۲۳",
+        "category": null,
+        "categoryUrl": null,
+        "excerpt": null,
+        "image": "/assets/images/382447-e1787172793919-150x135.jpg",
+        "imageFull": "/assets/images/382447-e1787172793919.jpg"
+      },
+      {
+        "title": "رئیس مجلس: کاهش مصرف بنزین ضرورتی اجتناب‌ناپذیر است",
+        "url": "https://petrotimes.ir/%d8%b1%d8%a6%db%8c%d8%b3-%d9%85%d8%ac%d9%84%d8%b3-%da%a9%d8%a7%d9%87%d8%b4-%d9%85%d8%b5%d8%b1%d9%81-%d8%a8%d9%86%d8%b2%db%8c%d9%86-%d8%b6%d8%b1%d9%88%d8%b1%d8%aa%db%8c-%d8%a7%d8%ac%d8%aa%d9%86%d8%a7/",
+        "dateText": "۲۹ مرداد ۱۴۰۵ - ۰۰:۴۵",
+        "category": null,
+        "categoryUrl": null,
+        "excerpt": null,
+        "image": "/assets/images/images-150x100.jpg",
+        "imageFull": "/assets/images/images.jpg"
+      }
+    ],
+    "magazine": {
+      "label": "magazine",
+      "articles": [
+        {
+          "title": "magazine",
+          "url": "",
+          "dateText": "",
+          "category": "magazine",
+          "categoryUrl": "https://petrotimes.ir/magazine/",
+          "excerpt": null,
+          "image": "/assets/images/30-450x613.jpg",
+          "imageFull": "/assets/images/30.jpg"
+        },
+        {
+          "title": "magazine",
+          "url": "",
+          "dateText": "",
+          "category": "magazine",
+          "categoryUrl": "https://petrotimes.ir/magazine/",
+          "excerpt": null,
+          "image": "/assets/images/photo_2024-11-03_22-37-15-450x557.jpg",
+          "imageFull": "/assets/images/photo_2024-11-03_22-37-15.jpg"
+        },
+        {
+          "title": "magazine",
+          "url": "",
+          "dateText": "",
+          "category": "magazine",
+          "categoryUrl": "https://petrotimes.ir/magazine/",
+          "excerpt": null,
+          "image": "/assets/images/30-450x613.jpg",
+          "imageFull": "/assets/images/30.jpg"
+        },
+        {
+          "title": "magazine",
+          "url": "",
+          "dateText": "",
+          "category": "magazine",
+          "categoryUrl": "https://petrotimes.ir/magazine/",
+          "excerpt": null,
+          "image": "/assets/images/photo_2024-11-03_22-37-15-450x557.jpg",
+          "imageFull": "/assets/images/photo_2024-11-03_22-37-15.jpg"
+        },
+        {
+          "title": "magazine",
+          "url": "",
+          "dateText": "",
+          "category": "magazine",
+          "categoryUrl": "https://petrotimes.ir/magazine/",
+          "excerpt": null,
+          "image": "/assets/images/30-450x613.jpg",
+          "imageFull": "/assets/images/30.jpg"
+        }
+      ]
+    },
+    "featureTitle": {
+      "label": "feature title",
+      "items": [
+        {
+          "title": "تنوع‌بخشی به سبد سوخت ضروری است",
+          "url": "https://petrotimes.ir/%d8%aa%d9%86%d9%88%d8%b9%d8%a8%d8%ae%d8%b4%db%8c-%d8%a8%d9%87-%d8%b3%d8%a8%d8%af-%d8%b3%d9%88%d8%ae%d8%aa-%d8%b6%d8%b1%d9%88%d8%b1%db%8c-%d8%a7%d8%b3%d8%aa/",
+          "dateText": "۲۹ مرداد ۱۴۰۵ - ۱۳:۰۰",
+          "category": "انرژی",
+          "categoryUrl": "https://petrotimes.ir/%d8%a7%d9%86%d8%b1%da%98%db%8c/",
+          "excerpt": null,
+          "image": null,
+          "imageFull": null,
+          "rankIcon": "/assets/icons/number-one_2097.png"
+        },
+        {
+          "title": "آزادگان؛ توسعه یک میدان مشترک در مقیاس ملی",
+          "url": "https://petrotimes.ir/%d8%a2%d8%b2%d8%a7%d8%af%da%af%d8%a7%d9%86%d8%9b-%d8%aa%d9%88%d8%b3%d8%b9%d9%87-%db%8c%da%a9-%d9%85%db%8c%d8%af%d8%a7%d9%86-%d9%85%d8%b4%d8%aa%d8%b1%da%a9-%d8%af%d8%b1-%d9%85%d9%82%db%8c%d8%a7%d8%b3/",
+          "dateText": "۲۹ مرداد ۱۴۰۵ - ۱۳:۰۴",
+          "category": "نفت",
+          "categoryUrl": "https://petrotimes.ir/%d9%86%d9%81%d8%aa/",
+          "excerpt": null,
+          "image": null,
+          "imageFull": null,
+          "rankIcon": "/assets/icons/two_10093046.png"
+        },
+        {
+          "title": "وزارت نفت؛ هنر پیداکردن راه",
+          "url": "https://petrotimes.ir/%d9%88%d8%b2%d8%a7%d8%b1%d8%aa-%d9%86%d9%81%d8%aa%d8%9b-%d9%87%d9%86%d8%b1-%d9%be%db%8c%d8%af%d8%a7%da%a9%d8%b1%d8%af%d9%86-%d8%b1%d8%a7%d9%87/",
+          "dateText": "۲۹ مرداد ۱۴۰۵ - ۱۳:۱۱",
+          "category": "نفت",
+          "categoryUrl": "https://petrotimes.ir/%d9%86%d9%81%d8%aa/",
+          "excerpt": null,
+          "image": null,
+          "imageFull": null,
+          "rankIcon": "/assets/icons/number-3_11822196.png"
+        }
+      ]
+    },
+    "energyMain": {
+      "title": "وزیر زیرساخت‌ ارمنستان: توافق تهران و ایروان برای شتاب‌بخشی به مناسبات انرژی",
+      "url": "https://petrotimes.ir/%d9%88%d8%b2%db%8c%d8%b1-%d8%b2%db%8c%d8%b1%d8%b3%d8%a7%d8%ae%d8%aa-%d8%a7%d8%b1%d9%85%d9%86%d8%b3%d8%aa%d8%a7%d9%86-%d8%aa%d9%88%d8%a7%d9%81%d9%82-%d8%aa%d9%87%d8%b1%d8%a7%d9%86-%d9%88/",
+      "dateText": "۲۹ مرداد ۱۴۰۵ - ۰۰:۳۱",
+      "category": "دسته‌بندی نشده",
+      "categoryUrl": "https://petrotimes.ir/%d8%af%d8%b3%d8%aa%d9%87%d8%a8%d9%86%d8%af%db%8c-%d9%86%d8%b4%d8%af%d9%87/",
+      "excerpt": "داویت خوداتیان در دیدار با محسن پاک‌نژاد، وزیر نفت، بیان کرد: در این نشست، زمینه‌های…",
+      "image": "/assets/images/3044119-e1787173519999-1024x565.jpg",
+      "imageFull": "/assets/images/3044119-e1787173519999.jpg"
+    },
+    "energySubs": [
+      {
+        "title": "مدیرعامل پالایش و پخش:راه‌حل ناترازی سوخت افزایش تولید و عرضه نیست",
+        "url": "https://petrotimes.ir/%d9%85%d8%af%db%8c%d8%b1%d8%b9%d8%a7%d9%85%d9%84-%d9%be%d8%a7%d9%84%d8%a7%db%8c%d8%b4-%d9%88-%d9%be%d8%ae%d8%b4%d8%b1%d8%a7%d9%87%d8%ad%d9%84-%d9%86%d8%a7%d8%aa%d8%b1%d8%a7%d8%b2%db%8c/",
+        "dateText": "۲۹ مرداد ۱۴۰۵ - ۰۰:۵۲",
+        "category": null,
+        "categoryUrl": null,
+        "excerpt": null,
+        "image": "/assets/images/3043855-e1787174523767-150x126.jpg",
+        "imageFull": "/assets/images/3043855-e1787174523767.jpg"
+      },
+      {
+        "title": "وزیر نیرو در دیدار با وزیر انرژی تاجیکستان:آمادگی ایران برای همکاری فنی در شبکه برق تاجیکستان",
+        "url": "https://petrotimes.ir/%d9%88%d8%b2%db%8c%d8%b1-%d9%86%db%8c%d8%b1%d9%88-%d8%af%d8%b1-%d8%af%db%8c%d8%af%d8%a7%d8%b1-%d8%a8%d8%a7-%d9%88%d8%b2%db%8c%d8%b1-%d8%a7%d9%86%d8%b1%da%98%db%8c-%d8%aa%d8%a7%d8%ac%db%8c%da%a9%d8%b3/",
+        "dateText": "۲۹ مرداد ۱۴۰۵ - ۰۰:۵۵",
+        "category": null,
+        "categoryUrl": null,
+        "excerpt": null,
+        "image": "/assets/images/3295646-150x100.jpg",
+        "imageFull": "/assets/images/3295646.jpg"
+      }
+    ],
+    "energyGrid": [
+      {
+        "title": "جلوگیری از کاهش ۶ هزار بشکه‌ای تولید نفت در گچساران",
+        "url": "https://petrotimes.ir/post-format-gallery-2/",
+        "dateText": "",
+        "category": null,
+        "categoryUrl": null,
+        "excerpt": null,
+        "image": "/assets/images/photo_2024-11-12_23-46-53-1024x682.jpg",
+        "imageFull": "/assets/images/photo_2024-11-12_23-46-53.jpg"
+      },
+      {
+        "title": "",
+        "url": "",
+        "dateText": "",
+        "category": null,
+        "categoryUrl": null,
+        "excerpt": null,
+        "image": "/assets/images/sepahan-oil-1.jpg",
+        "imageFull": "/assets/images/sepahan-oil-1.jpg"
+      },
+      {
+        "title": "جلوگیری از کاهش ۶ هزار بشکه‌ای تولید نفت در گچساران",
+        "url": "https://petrotimes.ir/post-format-gallery-2/",
+        "dateText": "",
+        "category": null,
+        "categoryUrl": null,
+        "excerpt": null,
+        "image": "/assets/images/photo_2024-11-12_23-46-53-1024x682.jpg",
+        "imageFull": "/assets/images/photo_2024-11-12_23-46-53.jpg"
+      }
+    ],
+    "advertise": {
+      "label": "advertise",
+      "items": [
+        {
+          "title": "روغن شرکت نفت سپاهان گریس",
+          "url": "https://petrotimes.ir/%d8%b1%d9%88%d8%ba%d9%86-%d8%b4%d8%b1%da%a9%d8%aa-%d9%86%d9%81%d8%aa-%d8%b3%d9%be%d8%a7%d9%87%d8%a7%d9%86-%da%af%d8%b1%db%8c%d8%b3/",
+          "dateText": "۲۹ مرداد ۱۴۰۵ - ۰۱:۰۵",
+          "category": null,
+          "categoryUrl": null,
+          "excerpt": null,
+          "image": "/assets/images/sepahan-oil-1.jpg",
+          "imageFull": "/assets/images/sepahan-oil-1.jpg"
+        },
+        {
+          "title": "روغن شرکت نفت سپاهان گریس",
+          "url": "https://petrotimes.ir/%d8%b1%d9%88%d8%ba%d9%86-%d8%b4%d8%b1%da%a9%d8%aa-%d9%86%d9%81%d8%aa-%d8%b3%d9%be%d8%a7%d9%87%d8%a7%d9%86-%da%af%d8%b1%db%8c%d8%b3/",
+          "dateText": "۲۹ مرداد ۱۴۰۵ - ۰۱:۰۵",
+          "category": null,
+          "categoryUrl": null,
+          "excerpt": null,
+          "image": "/assets/images/sepahan-oil-1.jpg",
+          "imageFull": "/assets/images/sepahan-oil-1.jpg"
+        }
+      ]
+    },
+    "social": {
+      "label": "We Are Social",
+      "links": [
+        {
+          "network": "facebook",
+          "label": "Facebook",
+          "href": "https://www.facebook.com/share/15Yx3THCSY/?mibextid=LQQJ4d"
+        },
+        {
+          "network": "twitter",
+          "label": "Twitter",
+          "href": "https://x.com/Petrotimes_ir"
+        },
+        {
+          "network": "youtube",
+          "label": "YouTube",
+          "href": "https://youtube.com/@petrotimes_ir?si=LtuI-OvoSXzeA1FB"
+        },
+        {
+          "network": "telegram",
+          "label": "Telegram",
+          "href": "https://t.me/petrotimes_ir"
+        },
+        {
+          "network": "instagram",
+          "label": "Instagram",
+          "href": "https://Instagram.com/Petrotimes.ir"
+        },
+        {
+          "network": "linkedin",
+          "label": "LinkedIn",
+          "href": ""
+        }
+      ]
+    },
+    "newsletter": {
+      "heading": "Subscribe to Updates",
+      "text": "Get the latest creative news from FooBar about art, design and business.",
+      "placeholder": "Your email address..",
+      "button": "Subscribe",
+      "disclaimer": "By signing up, you agree to the our terms and our",
+      "disclaimerLink": "Privacy Policy"
+    },
+    "footer": {
+      "about": {
+        "heading": "ABOUT US",
+        "text": "A comprehensive view of price fluctuations in the oil, gas, and petrochemical markets, with a focus on data analysis, is available on the petrotimes.ir",
+        "emailHtml": {
+          "bold": "Email Us:",
+          "rest": "info@petrotimes.ir"
+        }
+      },
+      "popularHeading": "بیشترین بازدید روز",
+      "latestHeading": "اخرین اخبار",
+      "popular": [
+        {
+          "title": "چین از بزرگ‌ترین خریدار PP جهان به رقیب صادراتی تبدیل می‌شود",
+          "url": "https://petrotimes.ir/%da%86%db%8c%d9%86-%d8%a7%d8%b2-%d8%a8%d8%b2%d8%b1%da%af%d8%aa%d8%b1%db%8c%d9%86-%d8%ae%d8%b1%db%8c%d8%af%d8%a7%d8%b1-pp-%d8%ac%d9%87%d8%a7%d9%86-%d8%a8%d9%87-%d8%b1%d9%82%db%8c%d8%a8-%d8%b5/",
+          "dateText": "۲۹ مرداد ۱۴۰۵ - ۰۹:۰۴",
+          "category": null,
+          "categoryUrl": null,
+          "excerpt": null,
+          "image": "/assets/images/ChatGPT-Image-Aug-20-2026-10_33_07-AM-150x84.png",
+          "imageFull": "/assets/images/ChatGPT-Image-Aug-20-2026-10_33_07-AM.png"
+        },
+        {
+          "title": "بازار نفت در آستانه شوک جدید",
+          "url": "https://petrotimes.ir/%d8%a8%d8%a7%d8%b2%d8%a7%d8%b1-%d9%86%d9%81%d8%aa-%d8%af%d8%b1-%d8%a2%d8%b3%d8%aa%d8%a7%d9%86%d9%87-%d8%b4%d9%88%da%a9-%d8%ac%d8%af%db%8c%d8%af/",
+          "dateText": "۲۹ مرداد ۱۴۰۵ - ۱۴:۴۰",
+          "category": null,
+          "categoryUrl": null,
+          "excerpt": null,
+          "image": "/assets/images/40-150x83.jpg",
+          "imageFull": "/assets/images/40.jpg"
+        },
+        {
+          "title": "گام تازه تهران-دوشنبه در مسیر خودکفایی سوختی؛ چراغ سبز برای یک قرارداد بلندمدت انرژی",
+          "url": "https://petrotimes.ir/%da%af%d8%a7%d9%85-%d8%aa%d8%a7%d8%b2%d9%87-%d8%aa%d9%87%d8%b1%d8%a7%d9%86-%d8%af%d9%88%d8%b4%d9%86%d8%a8%d9%87-%d8%af%d8%b1-%d9%85%d8%b3%db%8c%d8%b1-%d8%ae%d9%88%d8%af%da%a9%d9%81%d8%a7%db%8c%db%8c/",
+          "dateText": "۲۹ مرداد ۱۴۰۵ - ۱۴:۱۴",
+          "category": null,
+          "categoryUrl": null,
+          "excerpt": null,
+          "image": "/assets/images/37-150x85.jpg",
+          "imageFull": "/assets/images/37.jpg"
+        },
+        {
+          "title": "تهران و اسلام‌آباد، مرز ۹۰۰ کیلومتری را به خط لوله‌ای برای توسعه ۳۰ میلیارد دلاری تبدیل می‌کنند",
+          "url": "https://petrotimes.ir/%d8%aa%d9%87%d8%b1%d8%a7%d9%86-%d9%88-%d8%a7%d8%b3%d9%84%d8%a7%d9%85%d8%a2%d8%a8%d8%a7%d8%af%d8%8c-%d9%85%d8%b1%d8%b2-%db%b9%db%b0%db%b0-%da%a9%db%8c%d9%84%d9%88%d9%85%d8%aa%d8%b1%db%8c/",
+          "dateText": "۲۹ مرداد ۱۴۰۵ - ۱۳:۵۲",
+          "category": null,
+          "categoryUrl": null,
+          "excerpt": null,
+          "image": "/assets/images/34-150x82.jpg",
+          "imageFull": "/assets/images/34.jpg"
+        }
+      ],
+      "latest": [
+        {
+          "title": "۲۸ مرداد؛ روایتی کهنه از طمعی تازه",
+          "url": "https://petrotimes.ir/%db%b2%db%b8-%d9%85%d8%b1%d8%af%d8%a7%d8%af%d8%9b-%d8%b1%d9%88%d8%a7%db%8c%d8%aa%db%8c-%da%a9%d9%87%d9%86%d9%87-%d8%a7%d8%b2-%d8%b7%d9%85%d8%b9%db%8c-%d8%aa%d8%a7%d8%b2%d9%87/",
+          "dateText": "۲۹ مرداد ۱۴۰۵ - ۱۵:۲۳",
+          "category": null,
+          "categoryUrl": null,
+          "excerpt": null,
+          "image": "/assets/images/44-150x94.jpg",
+          "imageFull": "/assets/images/44.jpg"
+        },
+        {
+          "title": "پارس جنوبی، نه‌فقط برای امروز، فشارافزایی-تصمیمی برای ماندن",
+          "url": "https://petrotimes.ir/%d9%be%d8%a7%d8%b1%d8%b3-%d8%ac%d9%86%d9%88%d8%a8%db%8c%d8%8c-%d9%86%d9%87%d9%81%d9%82%d8%b7-%d8%a8%d8%b1%d8%a7%db%8c-%d8%a7%d9%85%d8%b1%d9%88%d8%b2%d8%8c-%d9%81%d8%b4%d8%a7%d8%b1%d8%a7%d9%81/",
+          "dateText": "۲۹ مرداد ۱۴۰۵ - ۱۵:۱۸",
+          "category": null,
+          "categoryUrl": null,
+          "excerpt": null,
+          "image": "/assets/images/41-150x84.jpg",
+          "imageFull": "/assets/images/41.jpg"
+        },
+        {
+          "title": "بازار نفت در آستانه شوک جدید",
+          "url": "https://petrotimes.ir/%d8%a8%d8%a7%d8%b2%d8%a7%d8%b1-%d9%86%d9%81%d8%aa-%d8%af%d8%b1-%d8%a2%d8%b3%d8%aa%d8%a7%d9%86%d9%87-%d8%b4%d9%88%da%a9-%d8%ac%d8%af%db%8c%d8%af/",
+          "dateText": "۲۹ مرداد ۱۴۰۵ - ۱۴:۴۰",
+          "category": null,
+          "categoryUrl": null,
+          "excerpt": null,
+          "image": "/assets/images/40-150x83.jpg",
+          "imageFull": "/assets/images/40.jpg"
+        },
+        {
+          "title": "گام تازه تهران-دوشنبه در مسیر خودکفایی سوختی؛ چراغ سبز برای یک قرارداد بلندمدت انرژی",
+          "url": "https://petrotimes.ir/%da%af%d8%a7%d9%85-%d8%aa%d8%a7%d8%b2%d9%87-%d8%aa%d9%87%d8%b1%d8%a7%d9%86-%d8%af%d9%88%d8%b4%d9%86%d8%a8%d9%87-%d8%af%d8%b1-%d9%85%d8%b3%db%8c%d8%b1-%d8%ae%d9%88%d8%af%da%a9%d9%81%d8%a7%db%8c%db%8c/",
+          "dateText": "۲۹ مرداد ۱۴۰۵ - ۱۴:۱۴",
+          "category": null,
+          "categoryUrl": null,
+          "excerpt": null,
+          "image": "/assets/images/37-150x85.jpg",
+          "imageFull": "/assets/images/37.jpg"
+        }
+      ],
+      "copyright": "حق نشر © 2026 Petro Times"
+    },
+    "offcanvas": {
+      "whatsHot": [
+        {
+          "title": "۲۸ مرداد؛ روایتی کهنه از طمعی تازه",
+          "url": "https://petrotimes.ir/%db%b2%db%b8-%d9%85%d8%b1%d8%af%d8%a7%d8%af%d8%9b-%d8%b1%d9%88%d8%a7%db%8c%d8%aa%db%8c-%da%a9%d9%87%d9%86%d9%87-%d8%a7%d8%b2-%d8%b7%d9%85%d8%b9%db%8c-%d8%aa%d8%a7%d8%b2%d9%87/",
+          "dateText": "۲۹ مرداد ۱۴۰۵ - ۱۵:۲۳",
+          "category": null,
+          "categoryUrl": null,
+          "excerpt": null,
+          "image": "/assets/images/44-150x94.jpg",
+          "imageFull": "/assets/images/44.jpg"
+        },
+        {
+          "title": "پارس جنوبی، نه‌فقط برای امروز، فشارافزایی-تصمیمی برای ماندن",
+          "url": "https://petrotimes.ir/%d9%be%d8%a7%d8%b1%d8%b3-%d8%ac%d9%86%d9%88%d8%a8%db%8c%d8%8c-%d9%86%d9%87%d9%81%d9%82%d8%b7-%d8%a8%d8%b1%d8%a7%db%8c-%d8%a7%d9%85%d8%b1%d9%88%d8%b2%d8%8c-%d9%81%d8%b4%d8%a7%d8%b1%d8%a7%d9%81/",
+          "dateText": "۲۹ مرداد ۱۴۰۵ - ۱۵:۱۸",
+          "category": null,
+          "categoryUrl": null,
+          "excerpt": null,
+          "image": "/assets/images/41-150x84.jpg",
+          "imageFull": "/assets/images/41.jpg"
+        },
+        {
+          "title": "بازار نفت در آستانه شوک جدید",
+          "url": "https://petrotimes.ir/%d8%a8%d8%a7%d8%b2%d8%a7%d8%b1-%d9%86%d9%81%d8%aa-%d8%af%d8%b1-%d8%a2%d8%b3%d8%aa%d8%a7%d9%86%d9%87-%d8%b4%d9%88%da%a9-%d8%ac%d8%af%db%8c%d8%af/",
+          "dateText": "۲۹ مرداد ۱۴۰۵ - ۱۴:۴۰",
+          "category": null,
+          "categoryUrl": null,
+          "excerpt": null,
+          "image": "/assets/images/40-150x83.jpg",
+          "imageFull": "/assets/images/40.jpg"
+        }
+      ]
+    }
+  }
+}
