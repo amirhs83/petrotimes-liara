@@ -66,7 +66,7 @@ const PAGES = [
   "https://tradingeconomics.com/commodity/copper",       // copper (own main row)
 ];
 
-const CACHE_TTL_MS = 20_000; // fetch_prices.php: rand(18,22)s
+const CACHE_TTL_MS = 15_000; // client pass: 20s (PHP parity) → 15s — faster visible refresh
 
 interface Quote {
   price: string | null;

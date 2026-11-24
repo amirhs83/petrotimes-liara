@@ -38,9 +38,11 @@ import type { TickerItem, MarketQuote } from '@/lib/content';
  *    (the freeze-report above);
  *  - a changed price flashes orange for 1s (index.php .updated-price glow,
  *    #fa9000) exactly like the PHP card;
- *  - quotes poll every 20s — the PHP UI polled fetch_prices.php every 5s
+ *  - quotes poll every 15s — the PHP UI polled fetch_prices.php every 5s
  *    behind a rand(18,22)s server cache, so the effective freshness was one
- *    cache period; 20s reproduces it without hammering the route.
+ *    cache period; 20s reproduced it, now tightened to 15s per the client
+ *    report that updates felt slow (both the UI poll and the server TTL
+ *    in /api/market moved to 15s).
  *
  * Data integrity (master prompt §07):
  *  - product names/icons come from the content layer (ticker.items);
@@ -73,8 +75,8 @@ const LOOP_COPIES = 3;
 /* auto-scroll speed, px per second, right-to-left */
 const SCROLL_SPEED = 30;
 
-/* quote refresh cadence — one PHP server-cache period (rand(18,22)s) */
-const QUOTES_POLL_MS = 20000;
+/* quote refresh cadence — matched to the /api/market server TTL (15s) */
+const QUOTES_POLL_MS = 15000;
 
 export function MarketTicker({ items }: { items: TickerItem[] }) {
   const [quotes, setQuotes] = useState<Record<string, MarketQuote> | null>(null);
