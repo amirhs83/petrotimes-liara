@@ -220,12 +220,14 @@ export default function SectionsPage() {
           return (
             <div
               key={s.key}
-              className={`bg-white border rounded-xl overflow-hidden transition-shadow ${
+              className={`bg-white border rounded-xl transition-shadow ${
                 isDirty ? "border-petro-brand-line shadow-sm" : "border-zinc-200"
               }`}
             >
-              {/* card header */}
-              <div className="flex items-center justify-between gap-3 bg-zinc-50 border-b border-zinc-200 px-4 py-3">
+              {/* card header — rounded-t-xl keeps the corner clipping the old
+                  overflow-hidden provided, WITHOUT clipping the PostPicker
+                  dropdown that opens past the card's bottom edge */}
+              <div className="flex items-center justify-between gap-3 bg-zinc-50 border-b border-zinc-200 px-4 py-3 rounded-t-xl">
                 <div className="min-w-0">
                   <div className="flex items-center gap-2 flex-wrap">
                     <h2 className="font-bold text-zinc-900 text-sm">

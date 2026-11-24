@@ -76,7 +76,7 @@ export default function PostPicker({ onSelect, placeholder }: PostPickerProps) {
         </span>
       </div>
       {(open && !emptyQuery) && (
-        <ul className="absolute z-30 top-full mt-1 right-0 left-0 bg-white border border-zinc-200 rounded-lg shadow-lg max-h-64 overflow-y-auto">
+        <ul className="absolute z-50 top-full mt-1 right-0 left-0 bg-white border border-zinc-200 rounded-lg shadow-lg max-h-64 overflow-y-auto">
           {results.length === 0 ? (
             <li className="px-3 py-3 text-sm text-zinc-500">نتیجه‌ای یافت نشد</li>
           ) : (
