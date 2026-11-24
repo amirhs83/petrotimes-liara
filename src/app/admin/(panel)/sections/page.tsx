@@ -2,6 +2,7 @@
 
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { toast } from "sonner";
+import { apiFetch } from "@/lib/csrf-client";
 import {
   DndContext,
   closestCenter,
@@ -165,7 +166,7 @@ export default function SectionsPage() {
   async function save(key: string) {
     setSaving(key);
     try {
-      const res = await fetch(`/api/admin/sections/${key}`, {
+      const res = await apiFetch(`/api/admin/sections/${key}`, {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({

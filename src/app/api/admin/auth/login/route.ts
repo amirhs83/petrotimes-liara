@@ -8,7 +8,7 @@ import {
   SESSION_COOKIE,
 } from "@/lib/auth";
 import { rateLimit, resetRateLimit, getClientIp } from "@/lib/rate-limit";
-import { isSameOrigin, forbiddenOrigin } from "@/lib/security";
+import { isSameOrigin, csrfTokenValid, forbiddenOrigin } from "@/lib/security";
 
 const loginSchema = z.object({
   email: z.string().trim().toLowerCase().email("ایمیل نامعتبر است"),
@@ -20,7 +20,8 @@ const WINDOW_MS = 15 * 60 * 1000;
 const MAX_ATTEMPTS = 5;
 
 export async function POST(req: Request) {
-  if (!isSameOrigin(req)) return forbiddenOrigin();
+  // origin check OR double-submit token (proxy chains may rewrite Host)
+  if (!isSameOrigin(req) && !csrfTokenValid(req)) return forbiddenOrigin();
 
   let body: unknown;
   try {

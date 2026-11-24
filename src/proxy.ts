@@ -3,6 +3,7 @@ import { jwtVerify } from "jose";
 import { deletedNewsSlugs } from "@/lib/deleted-news-slugs";
 
 const SESSION_COOKIE = "petrotimes_session";
+const CSRF_COOKIE = "petrotimes_csrf";
 
 async function isValidSession(token: string | undefined): Promise<boolean> {
   if (!token) return false;
@@ -94,7 +95,21 @@ export default async function proxy(req: NextRequest) {
     return NextResponse.redirect(url);
   }
 
-  return NextResponse.next();
+  // Double-submit CSRF seed: every admin page load carries a readable token
+  // cookie so admin fetches can echo it in the x-csrf-token header. Reverse
+  // proxy chains (preview panels) may rewrite the Host header, which breaks
+  // the origin comparison — the token is the trusted fallback there.
+  const res = NextResponse.next();
+  if (!req.cookies.get(CSRF_COOKIE)) {
+    res.cookies.set(CSRF_COOKIE, crypto.randomUUID(), {
+      httpOnly: false,
+      sameSite: "lax",
+      secure: process.env.NODE_ENV === "production",
+      path: "/",
+      maxAge: 60 * 60 * 24 * 7,
+    });
+  }
+  return res;
 }
 
 export const config = {

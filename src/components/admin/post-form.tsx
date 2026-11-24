@@ -3,6 +3,7 @@
 import { useEffect, useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
+import { apiFetch } from "@/lib/csrf-client";
 import RichTextEditor from "@/components/admin/editor/rich-text-editor";
 import MediaPicker from "@/components/admin/media-picker";
 import TagInput from "@/components/admin/tag-input";
@@ -276,7 +277,7 @@ export default function PostForm({
   async function submit(mode: "strict" | "force") {
     setSaving(true);
     try {
-      const res = await fetch(
+      const res = await apiFetch(
         postId ? `/api/admin/posts/${postId}` : "/api/admin/posts",
         {
           method: postId ? "PUT" : "POST",

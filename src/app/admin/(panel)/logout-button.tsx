@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { LogOut, Loader2 } from "lucide-react";
+import { apiFetch } from "@/lib/csrf-client";
 
 export default function LogoutButton() {
   const router = useRouter();
@@ -11,7 +12,7 @@ export default function LogoutButton() {
   async function onLogout() {
     setLoading(true);
     try {
-      await fetch("/api/admin/auth/logout", { method: "POST" });
+      await apiFetch("/api/admin/auth/logout", { method: "POST" });
     } finally {
       router.replace("/admin/login");
       router.refresh();

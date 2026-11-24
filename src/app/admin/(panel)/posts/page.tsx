@@ -3,6 +3,7 @@
 import { useCallback, useEffect, useState } from "react";
 import Link from "next/link";
 import { toast } from "sonner";
+import { apiFetch } from "@/lib/csrf-client";
 import {
   PlusCircle,
   Search,
@@ -67,7 +68,7 @@ export default function PostsListPage() {
     if (!deleting) return;
     setDeleteBusy(true);
     try {
-      const res = await fetch(`/api/admin/posts/${deleting.id}`, { method: "DELETE" });
+      const res = await apiFetch(`/api/admin/posts/${deleting.id}`, { method: "DELETE" });
       const d = await res.json().catch(() => null);
       if (!res.ok || !d?.ok) throw new Error(d?.error ?? "حذف ناموفق بود");
       toast.success("پست حذف شد");

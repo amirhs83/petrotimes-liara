@@ -1,6 +1,8 @@
 // Client-side helper for uploading media through the storage abstraction layer
 // (POST /api/admin/media/upload). Used by the rich text editor and post forms.
 
+import { apiFetch } from "@/lib/csrf-client";
+
 export interface CropState {
   xPct: number;
   yPct: number;
@@ -48,7 +50,7 @@ export async function uploadMediaFile(
     if (crop.sourceId) fd.append("cropSourceId", crop.sourceId);
   }
 
-  const res = await fetch("/api/admin/media/upload", {
+  const res = await apiFetch("/api/admin/media/upload", {
     method: "POST",
     body: fd,
   });

@@ -2,6 +2,7 @@
 
 import { useCallback, useEffect, useState } from "react";
 import { toast } from "sonner";
+import { apiFetch } from "@/lib/csrf-client";
 import { Input } from "@/components/ui/input";
 import {
   Plus,
@@ -41,7 +42,7 @@ export default function CategoriesPage() {
     if (!name.trim()) return;
     setAdding(true);
     try {
-      const res = await fetch("/api/admin/categories", {
+      const res = await apiFetch("/api/admin/categories", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -68,7 +69,7 @@ export default function CategoriesPage() {
     if (!editing) return;
     setBusy(true);
     try {
-      const res = await fetch(`/api/admin/categories/${editing.id}`, {
+      const res = await apiFetch(`/api/admin/categories/${editing.id}`, {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -93,7 +94,7 @@ export default function CategoriesPage() {
     if (!deleting) return;
     setBusy(true);
     try {
-      const res = await fetch(`/api/admin/categories/${deleting.id}`, {
+      const res = await apiFetch(`/api/admin/categories/${deleting.id}`, {
         method: "DELETE",
       });
       const d = await res.json().catch(() => null);
