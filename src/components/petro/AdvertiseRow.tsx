@@ -6,16 +6,16 @@ import { Icon } from './Primitives';
  * ADVERTISE 1 — separate panel holding the three media tiles that used to
  * close the ENERGY section (client request: "باید توی پنل جدا باشه و جزو
  * انرژی نیست — اسمشم بزار ادورتایز 1"). Same tile recipe as before (16:9
- * media-only tile, gallery posts keep the picture glyph), now under its own
- * advertise block-head between ENERGY and the ADVERTISE card row.
+ * media-only tile, gallery posts keep the picture glyph). No visible
+ * heading — the client asked to drop the label above the tiles
+ * ("نیاز نیست بالای تصاویر بزاری بذارش، برش دار"). The panel is managed
+ * from the dedicated admin section «ادورتایز 1» (HomeSection key
+ * "advertise1"), no longer from energy positions 4-6.
  */
 export function AdvertiseOne({ items }: { items: Article[] }) {
   return (
     <div className="pt-advertise pt-advertise-one" data-testid="advertise-one">
       <div className="pt-advertise-inner pt-advertise-one-inner">
-        <div className="pt-block-head pt-block-head-e pt-block-head-e2 is-left">
-          <h4 className="heading">ADVERTISE 1</h4>
-        </div>
         <div className="pt-advertise-one-grid">
           {items.map((a, i) => (
             <article className="pt-grid-post pt-advertise-one-tile" key={`${a.url}-${i}`}>

@@ -82,7 +82,9 @@ Any non-2xx status is treated as failure (frontend falls back to snapshot). Reco
     "featureTitle":  { "label": "feature title", "items": [ ] }, // FeatureArticles
     "energyMain":    { },                   // ENERGY — hero card (Article)
     "energySubs":    [ ],                   // exactly 2 Articles
-    "energyGrid":    [ ],                   // exactly 3 Articles
+    "advertise1":    [ ],                   // exactly 3 Articles — the ADVERTISE 1 tiles
+                                            // panel (own HomeSection key "advertise1",
+                                            // migrated out of energy positions 4-6)
     "social":        { "label": "we are social", "links": [ ] },
     "newsletter":    { },                   // NewsletterData
     "advertise":     { "label": "advertise", "items": [ ] },    // 2 Articles

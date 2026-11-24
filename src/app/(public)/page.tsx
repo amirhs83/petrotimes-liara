@@ -129,8 +129,10 @@ export default async function Home() {
 
         {/* ========================= ADVERTISE 1 ======================================== */}
         {/* the three media tiles that used to close the ENERGY section — their
-            own panel now (client request), between ENERGY and ADVERTISE */}
-        <AdvertiseOne items={s.energyGrid} />
+            own admin-managed panel now (client request), between ENERGY and
+            ADVERTISE. No visible heading (client: "برش دار") — placement is
+            managed from the dedicated admin section «ادورتایز 1». */}
+        <AdvertiseOne items={s.advertise1} />
 
         {/* ============================== ADVERTISE ===================================== */}
         <AdvertiseRow label={s.advertise.label} items={s.advertise.items} />

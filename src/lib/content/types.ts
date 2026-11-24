@@ -116,7 +116,8 @@ export interface HomepageData {
     featureTitle: { label: string; items: FeatureArticle[] };
     energyMain: Article;
     energySubs: Article[];
-    energyGrid: Article[];
+    /** the three media tiles panel — own admin section «ادورتایز 1» (key advertise1) */
+    advertise1: Article[];
     social: { label: string; links: SocialLink[] };
     newsletter: NewsletterData;
     advertise: { label: string; items: Article[] };

@@ -1679,13 +1679,14 @@ a:hover { color: var(--c-a-hover); }
 
 /* ADVERTISE 1 — own panel for the three media tiles that used to close the
    energy section (client request: "توی پنل جدا باشه و جزو انرژی نیست —
-   اسمشم بزار ادورتایز 1"). Advertise block-head language; tiles keep the
-   16:9 media-only recipe. */
+   اسمشم بزار ادورتایز 1"). Tiles keep the 16:9 media-only recipe. The panel
+   carries NO visible heading (client: "بالای تصاویر نذار، برش دار") — it is
+   managed from the dedicated admin section «ادورتایز 1» only. */
 .pt-advertise-one { margin-bottom: 23px; }
-.pt-advertise-one .pt-block-head { --c-block: var(--c-contrast); margin-bottom: 25px; }
 /* the shared inner is a flex ROW (advertise cards side by side) — the panel
-   needs a column: heading row above, then the full-width 3-tile grid.
-   Two-class selector so it outranks the shared .pt-advertise-inner rules. */
+   needs a column so the full-width 3-tile grid stacks under the (removed)
+   heading position. Two-class selector so it outranks the shared
+   .pt-advertise-inner rules. */
 .pt-advertise-inner.pt-advertise-one-inner {
   flex-direction: column;
   align-items: stretch;

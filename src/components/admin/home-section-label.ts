@@ -13,7 +13,9 @@ export function homeSectionLabel(key: string, fallback: string): string {
     case "feature":
       return "برترین‌ها (رتبه‌دار)";
     case "energy":
-      return "انرژی (اصلی + فرعی + شبکه)";
+      return "انرژی (اصلی + فرعی)";
+    case "advertise1":
+      return "ادورتایز 1";
     case "advertise":
       return "تبلیغات ویژه";
     default:

@@ -38,6 +38,6 @@
 - **تک‌اپلیکیشن سه‌لایه:** CMS (مدل‌های Prisma + پنل ادمین + API) + Content Adapter (`src/lib/content/cms.ts`) + فرانت پیکسل‌پرفکت (`src/components/petro/` + `petro.css`).
 - **قرارداد داده:** فرانت با شکل `HomepageData` (`src/lib/content/types.ts`، مستند در `docs/API-CONTRACT.md`) کار می‌کند؛ Adapter داده Prisma را به همین شکل تبدیل می‌کند.
 - **جدا سازی CSS:** صفحات عمومی فقط `petro.css` (بدون preflight تیلویند — پیکسل‌پرفکت)؛ پنل ادمین فقط `globals.css` (Tailwind + shadcn).
-- **جایگاه‌ها:** هر خبر به‌جز «آخرین اخبار/پربازدیدترین» یک جایگاه مشخص در سکشن‌های صفحه اصلی دارد (`HomeSection` + `SectionPlacement`؛ کلیدها: hero، videos، topnews، magazine، feature، energy، advertise).
+- **جایگاه‌ها:** هر خبر به‌جز «آخرین اخبار/پربازدیدترین» یک جایگاه مشخص در سکشن‌های صفحه اصلی دارد (`HomeSection` + `SectionPlacement`؛ کلیدها: hero، videos، topnews، magazine، feature، energy، advertise1 («ادورتایز 1» — سه تصویر، از انرژی جدا شده)، advertise).
 - **دیتابیس دوگانه:** اسکیمای کانننیکال `prisma/schema.prisma` = PostgreSQL (پروداکشن لیارا/Neon). برای توسعه محلی سندباکس، `bun run db:local:push` نسخه SQLite می‌سازد (`prisma/schema.local.prisma` — فایل تولیدشده، دستی ویرایش نشود).
 - **تیکر قیمت:** طبق تصمیم کاربر فعلاً دست‌نخورده باقی می‌ماند (iframe واقعی سایت + fallback بومی).

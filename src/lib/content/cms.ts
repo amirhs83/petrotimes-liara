@@ -21,7 +21,9 @@
  *  topnews   [1]  → topNewsLabel.article, [2..4] → topNewsItems
  *  magazine  [1..5] → magazine.articles
  *  feature   [1..3] → featureTitle.items (rank icons 1..3)
- *  energy    [1] → energyMain, [2..3] → energySubs, [4..6] → energyGrid
+ *  energy    [1] → energyMain, [2..3] → energySubs
+ *  advertise1 [1..3] → advertise1 (the three media tiles panel — own
+ *             admin section «ادورتایز 1», migrated out of energy 4-6)
  *  advertise [1..2] → advertise.items
  *  Automatic (no manual placement): footer.popular / footer.latest /
  *  offcanvas.whatsHot from most-viewed and latest queries.
@@ -31,6 +33,7 @@ import { db, withDbRetry } from "@/lib/db";
 import { relUrl } from "@/lib/site";
 import { faDateLong, faTime } from "@/lib/post-format";
 import { getSnapshot } from "./snapshot";
+import { ensureAdvertise1Section } from "./advertise1-section";
 import type { Article, FeatureArticle, HomepageData, MenuItem } from "./types";
 
  
@@ -196,7 +199,14 @@ const FOOTER_ABOUT: HomepageData["sections"]["footer"]["about"] = {
  * keeps the last fully-successful payload in memory.
  */
 export async function buildHomepageData(): Promise<HomepageData> {
-  const [hero, videos, topnews, magazine, feature, energy, advertise, mostViewed, latest, menu] =
+  // one-time idempotent bootstrap of the «ادورتایز 1» section (new section
+  // row + legacy energy 4-6 placement move). Never blocks the homepage:
+  // a failure just means the section stays empty until the next build.
+  await ensureAdvertise1Section().catch((err) =>
+    console.error("[cms] advertise1 bootstrap failed:", err)
+  );
+
+  const [hero, videos, topnews, magazine, feature, energy, advertise1, advertise, mostViewed, latest, menu] =
     await Promise.all([
       getSectionPosts("hero"),
       getSectionPosts("videos"),
@@ -204,6 +214,7 @@ export async function buildHomepageData(): Promise<HomepageData> {
       getSectionPosts("magazine"),
       getSectionPosts("feature"),
       getSectionPosts("energy"),
+      getSectionPosts("advertise1"),
       getSectionPosts("advertise"),
       getMostViewed(4),
       getLatest(4),
@@ -230,7 +241,7 @@ export async function buildHomepageData(): Promise<HomepageData> {
       },
       energyMain: energy[0] ?? snapshot.sections.energyMain,
       energySubs: energy.slice(1, 3),
-      energyGrid: energy.slice(3, 6),
+      advertise1: advertise1.slice(0, 3),
       social: { label: "we are social", links: SOCIAL_LINKS },
       newsletter: NEWSLETTER,
       advertise: { label: "advertise", items: advertise.slice(0, 2) },

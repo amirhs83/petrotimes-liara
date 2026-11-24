@@ -3,7 +3,7 @@
  *
  * Creates (deterministically — wipe-and-recreate for content tables):
  *  - Categories (PetroTimes taxonomy: نفت / گاز / پتروشیمی / پالایش و پخش / بین الملل)
- *  - HomeSections (the 7 manual slots of the PetroTimes homepage layout)
+ *  - HomeSections (the 8 manual slots of the PetroTimes homepage layout)
  *  - Admin user (ADMIN_EMAIL / ADMIN_PASSWORD env; existing admin is untouched)
  *  - ~41 sample posts — every post ships with:
  *      · homeImage (card / OG fallback)  · innerImage (article hero)
@@ -40,7 +40,8 @@ const homeSections = [
   { key: "topnews", name: "مطالب ویژه سایدبار", capacity: 4 },
   { key: "magazine", name: "مجله", capacity: 5 },
   { key: "feature", name: "برترین‌ها", capacity: 3 },
-  { key: "energy", name: "انرژی", capacity: 6 }, // [1] main + [2..3] subs + [4..6] grid
+  { key: "energy", name: "انرژی", capacity: 3 }, // [1] main + [2..3] subs
+  { key: "advertise1", name: "ادورتایز 1", capacity: 3 }, // the three media tiles panel (ex-energy grid)
   { key: "advertise", name: "تبلیغات ویژه", capacity: 2 },
 ];
 
@@ -557,7 +558,7 @@ const seedPosts: SeedPost[] = [
     lead: "تفاهمنامه تامین تجهیزات استخراج میان اپراتورهای میدانی و سازندگان داخلی ثبت شده است.",
     category: "naft",
     image: IMG.deal,
-    placements: [{ section: "energy", position: 4 }],
+    placements: [{ section: "advertise1", position: 1 }],
     views: 1200,
     hoursAgo: 24,
   },
@@ -567,7 +568,7 @@ const seedPosts: SeedPost[] = [
     lead: "ساختار بازار عمده‌فروشی انرژی در آستانه بازطراحی قرار دارد.",
     category: "gas",
     image: IMG.market,
-    placements: [{ section: "energy", position: 5 }],
+    placements: [{ section: "advertise1", position: 2 }],
     views: 1100,
     hoursAgo: 30,
   },
@@ -577,7 +578,7 @@ const seedPosts: SeedPost[] = [
     lead: "مدل‌سازی داده‌محور سناریوهای عرضه انرژی در ماه‌های سرد، نتیجه جالبی در بر دارد.",
     category: "bein-al-melal",
     image: IMG.chart,
-    placements: [{ section: "energy", position: 6 }],
+    placements: [{ section: "advertise1", position: 3 }],
     views: 900,
     hoursAgo: 38,
   },
