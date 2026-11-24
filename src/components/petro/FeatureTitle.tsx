@@ -25,7 +25,6 @@ export function FeatureTitle({ items }: { items: FeatureArticle[] }) {
                 category={item.category}
                 categoryUrl={item.categoryUrl}
                 dateText={item.dateText}
-                englishDate
               />
             </div>
           </article>

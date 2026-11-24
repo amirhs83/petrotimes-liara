@@ -25,11 +25,10 @@ export function EnergySection({
         article={main}
         weight="700"
         className="pt-hero-post pt-energy-main"
-        englishDate
       />
       <div className="pt-energy-subs">
         {subs.map((a) => (
-          <SmallPostCard key={a.url} article={a} englishDateSlot />
+          <SmallPostCard key={a.url} article={a} />
         ))}
       </div>
       <div className="pt-energy-grid">

@@ -1,4 +1,5 @@
 import type { Article } from '@/lib/content';
+import { topNewsDateLine } from '@/lib/content/english-meta';
 import { CategoryChip, EnglishDateLine, Icon } from './Primitives';
 import { SmallPostCard } from './PostCards';
 
@@ -10,11 +11,13 @@ import { SmallPostCard } from './PostCards';
  *
  * Client pass (phones ≤767): every TV item (player + playlist cards) also
  * renders the Top News English date line (.pt-en-date); CSS swaps it in for
- * the Persian post-date on phones only — ≥768 markup shows the Persian meta
- * exactly as before. The player play glyph points RIGHT like the playlist
+ * the meta date on phones only. The meta date itself is the English Top
+ * News line at every breakpoint (client: "هرجایی که تاریخ فارسی بود به همین
+ * فرمت درش بیار"). The player play glyph points RIGHT like the playlist
  * thumbs (the old RTL mirror removed from .pt-play-icon .pt-icon).
  */
 export function TvSection({ player, playlist }: { player: Article; playlist: Article[] }) {
+  const playerDate = topNewsDateLine(player.dateText);
   return (
     <>
       <section className="pt-tv-block" data-testid="tv-section">
@@ -49,7 +52,12 @@ export function TvSection({ player, playlist }: { player: Article; playlist: Art
                   <div className="meta-below">
                     <span className="meta-item date">
                       <span className="date-link">
-                        <time className="post-date">{player.dateText}</time>
+                        <time
+                          className={`post-date${playerDate ? ' pt-meta-date-en' : ''}`}
+                          dir={playerDate ? 'ltr' : undefined}
+                        >
+                          {playerDate ?? player.dateText}
+                        </time>
                       </span>
                     </span>
                   </div>

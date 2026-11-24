@@ -70,28 +70,18 @@ export function PostMeta({
   dateText,
   variant = 'light',
   above = false,
-  englishDate = false,
 }: {
   category: string | null;
   categoryUrl: string | null;
   dateText: string;
   variant?: 'light' | 'dark';
   above?: boolean;
-  /** swap the Persian date for the Top News English line
-   *  ("NOV 23, 2026 • 02:59 PM") inside the same date slot */
-  englishDate?: boolean;
 }) {
-  const enLine = englishDate ? topNewsDateLine(dateText) : null;
-  /* Top News date placement (client request: "همه باید بیان سمت چپ خبر —
-     دقیقا مثل تاپ نیوز"): the English date line is pinned to the visual
-     LEFT edge of the meta row. The row flex classes differ by content:
-      - has-en-date: category (start/right) + date (end/left), spaced apart
-      - en-date-only: the date alone at the left edge (RTL flex-end) */
-  const enRowClass = !enLine
-    ? ''
-    : category && !above
-      ? ' has-en-date'
-      : ' en-date-only';
+  /* the date slot carries the English Top News line everywhere
+     ("NOV 23, 2026 • 02:59 PM") in its ORIGINAL position — inline after the
+     category at the row start (right). Unparseable lines fall back to the
+     Persian text (client: "هرجایی که تاریخ فارسی بود به همین فرمت درش بیار"). */
+  const enLine = topNewsDateLine(dateText);
   return (
     <div className={`pt-post-meta ${variant === 'dark' ? 'pt-meta-dark' : ''}`}>
       {above && category ? (
@@ -101,7 +91,7 @@ export function PostMeta({
           </span>
         </div>
       ) : null}
-      <div className={`meta-below meta-below-row${enRowClass}`}>
+      <div className="meta-below meta-below-row">
         {category && !above ? (
           <span className="meta-item post-cat">
             <a href={categoryUrl ?? '#'} className="post-cat-link" rel="category">

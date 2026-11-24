@@ -13,7 +13,6 @@ export function SmallPostCard({
   playlist = false,
   clamp = true,
   englishDate = false,
-  englishDateSlot = false,
 }: {
   article: Article;
   /** m = 17px (default), s = 15px (hero secondary) */
@@ -22,11 +21,9 @@ export function SmallPostCard({
   /** 2-line clamp (limit-lines) — sidebar/playlist/footer yes, duo cards no */
   clamp?: boolean;
   /** also render the Top News English date line (.pt-en-date, phones ≤767
-   *  only via CSS) — TV playlist uses it to match the Top News meta */
+   *  only via CSS) — TV playlist uses it to match the Top News meta; the
+   *  meta slot itself always carries the English line (PostMeta) */
   englishDate?: boolean;
-  /** swap the Persian date INSIDE the meta slot for the Top News English
-   *  line ("NOV 23, 2026 • 02:59 PM") at every breakpoint — energy subs */
-  englishDateSlot?: boolean;
 }) {
   return (
     <article className={`pt-small-post ${size === 's' ? 'pt-t-s' : ''} ${clamp ? 'pt-clamp' : ''}`}>
@@ -49,12 +46,7 @@ export function SmallPostCard({
         <h4 className="pt-post-title">
           <a href={article.url}>{article.title}</a>
         </h4>
-        <PostMeta
-          category={null}
-          categoryUrl={null}
-          dateText={article.dateText}
-          englishDate={englishDateSlot}
-        />
+        <PostMeta category={null} categoryUrl={null} dateText={article.dateText} />
         {englishDate ? <EnglishDateLine dateText={article.dateText} /> : null}
       </div>
     </article>
@@ -81,8 +73,6 @@ export function HighlightsHero({
   /** render the post's روتیتر (kicker) as a gray one-line eyebrow above the
    *  title — the desktop duo hero (mobile/tablet FeaturedNews has its own) */
   kicker?: boolean;
-  /** swap the Persian date for the Top News English line in the meta row */
-  englishDate?: boolean;
 }) {
   return (
     <div className="pt-block-wrap-mb pt-block-mb">
@@ -111,7 +101,6 @@ export function HighlightsHero({
             category={article.category}
             categoryUrl={article.categoryUrl}
             dateText={article.dateText}
-            englishDate={englishDate}
           />
           {article.excerpt ? (
             <div className="pt-excerpt">

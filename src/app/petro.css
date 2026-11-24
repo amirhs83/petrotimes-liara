@@ -1056,9 +1056,10 @@ a:hover { color: var(--c-a-hover); }
 }
 .pt-post-meta a.post-cat-link:hover { color: var(--c-main); }
 
-/* English date swap inside the meta slot (feature title / energy / article
-   meta) — the Top News date recipe: Barlow 600 #848c9b, 0.02em tracking,
-   isolated LTR run inside the RTL row ("NOV 23, 2026 • 02:59 PM") */
+/* English date swap inside the meta slot (every post meta row) — the Top
+   News date recipe: Barlow 600 #848c9b, 0.02em tracking, isolated LTR run
+   inside the RTL row ("NOV 23, 2026 • 02:59 PM"). The date keeps its
+   ORIGINAL position — inline after the category at the row start (right). */
 .pt-meta-date-en {
   font-weight: 600;
   letter-spacing: 0.02em;
@@ -1066,23 +1067,6 @@ a:hover { color: var(--c-a-hover); }
   direction: ltr;
   unicode-bidi: isolate;
   display: inline-block;
-}
-
-/* Top News date placement (client request) — the English date pinned to the
-   visual LEFT edge of the meta row:
-   - has-en-date: category stays at the row start (right), the date lands at
-     the far left (space-between); the — separator is dropped (Top News rows
-     carry no separator)
-   - en-date-only: the date alone at the left edge (RTL flex-end = left) */
-.pt-post-meta .meta-below-row.has-en-date {
-  display: flex;
-  justify-content: space-between;
-  align-items: baseline;
-}
-.pt-post-meta .meta-below-row.has-en-date .meta-item::before { display: none; }
-.pt-post-meta .meta-below-row.en-date-only {
-  display: flex;
-  justify-content: flex-end;
 }
 
 .pt-post-title {
