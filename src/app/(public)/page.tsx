@@ -14,7 +14,7 @@ import { FeatureTitle } from '@/components/petro/FeatureTitle';
 import { SocialWidget } from '@/components/petro/SocialWidget';
 import { NewsletterWidget } from '@/components/petro/NewsletterWidget';
 import { EnergySection } from '@/components/petro/EnergySection';
-import { AdvertiseRow } from '@/components/petro/AdvertiseRow';
+import { AdvertiseRow, AdvertiseOne } from '@/components/petro/AdvertiseRow';
 import { SiteFooter } from '@/components/petro/SiteFooter';
 
 // homepage reflects the latest published CMS content; cached briefly (ISR)
@@ -113,7 +113,7 @@ export default async function Home() {
           <div className="pt-container">
             <div className="pt-columns">
               <div className="pt-content-col">
-                <EnergySection main={s.energyMain} subs={s.energySubs} grid={s.energyGrid} />
+                <EnergySection main={s.energyMain} subs={s.energySubs} />
               </div>
               <aside className="pt-sidebar-col">
                 <SocialWidget label={s.social.label} links={s.social.links} />
@@ -126,6 +126,11 @@ export default async function Home() {
             </div>
           </div>
         </div>
+
+        {/* ========================= ADVERTISE 1 ======================================== */}
+        {/* the three media tiles that used to close the ENERGY section — their
+            own panel now (client request), between ENERGY and ADVERTISE */}
+        <AdvertiseOne items={s.energyGrid} />
 
         {/* ============================== ADVERTISE ===================================== */}
         <AdvertiseRow label={s.advertise.label} items={s.advertise.items} />

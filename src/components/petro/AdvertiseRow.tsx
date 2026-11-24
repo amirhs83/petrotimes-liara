@@ -1,5 +1,46 @@
 import type { Article } from '@/lib/content';
 import { topNewsDateLine } from '@/lib/content/english-meta';
+import { Icon } from './Primitives';
+
+/**
+ * ADVERTISE 1 — separate panel holding the three media tiles that used to
+ * close the ENERGY section (client request: "باید توی پنل جدا باشه و جزو
+ * انرژی نیست — اسمشم بزار ادورتایز 1"). Same tile recipe as before (16:9
+ * media-only tile, gallery posts keep the picture glyph), now under its own
+ * advertise block-head between ENERGY and the ADVERTISE card row.
+ */
+export function AdvertiseOne({ items }: { items: Article[] }) {
+  return (
+    <div className="pt-advertise pt-advertise-one" data-testid="advertise-one">
+      <div className="pt-advertise-inner pt-advertise-one-inner">
+        <div className="pt-block-head pt-block-head-e pt-block-head-e2 is-left">
+          <h4 className="heading">ADVERTISE 1</h4>
+        </div>
+        <div className="pt-advertise-one-grid">
+          {items.map((a, i) => (
+            <article className="pt-grid-post pt-advertise-one-tile" key={`${a.url}-${i}`}>
+              <div className="pt-media">
+                <a href={a.url} className="pt-image-link" title={a.title} aria-label={a.title || undefined}>
+                  <span className="pt-media-ratio pt-ratio-16-9">
+                    <span
+                      className="pt-bg-cover"
+                      style={{ backgroundImage: `url("${a.image ?? ''}")`, position: 'absolute', top: 0, right: 0 } as React.CSSProperties}
+                    />
+                  </span>
+                  {a.url.includes('post-format-gallery') ? (
+                    <span className="pt-play-icon pt-gallery-icon" aria-hidden="true">
+                      <Icon name="pictureO" />
+                    </span>
+                  ) : null}
+                </a>
+              </div>
+            </article>
+          ))}
+        </div>
+      </div>
+    </div>
+  );
+}
 
 /**
  * ADVERTISE row — 2 ad cards from the right inside a 1230px container
