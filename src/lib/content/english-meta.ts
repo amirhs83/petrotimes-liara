@@ -94,6 +94,21 @@ export interface EnglishMeta {
   time: string | null;
 }
 
+/**
+ * "NOV 23, 2026 • 02:59 PM" from a Persian dateText — the shared Top News
+ * meta recipe (Gregorian date + zero-padded 12-hour clock, • separator).
+ * Used by the mobile Top News rows, the TV swap line and the in-slot English
+ * date swap (feature title / energy / article meta). Returns null when the
+ * date line cannot be parsed.
+ */
+export function topNewsDateLine(dateText: string): string | null {
+  const meta = englishMeta(dateText, null);
+  const line = [meta.date, meta.time ? meta.time.replace(/^(\d):/, '0$1:') : '']
+    .filter(Boolean)
+    .join(' • ');
+  return line || null;
+}
+
 export function englishMeta(dateText: string, category: string | null): EnglishMeta {
   const norm = (category ?? '').replace(/\s+/g, ' ').trim();
   const categoryEn = norm ? CATEGORY_EN[norm] ?? null : null;

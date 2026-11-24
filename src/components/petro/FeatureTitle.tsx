@@ -21,7 +21,12 @@ export function FeatureTitle({ items }: { items: FeatureArticle[] }) {
               <h4 className="pt-post-title">
                 <a href={item.url}>{item.title}</a>
               </h4>
-              <PostMeta category={item.category} categoryUrl={item.categoryUrl} dateText={item.dateText} />
+              <PostMeta
+                category={item.category}
+                categoryUrl={item.categoryUrl}
+                dateText={item.dateText}
+                englishDate
+              />
             </div>
           </article>
         ))}

@@ -1050,6 +1050,18 @@ a:hover { color: var(--c-a-hover); }
 }
 .pt-post-meta a.post-cat-link:hover { color: var(--c-main); }
 
+/* English date swap inside the meta slot (feature title / energy / article
+   meta) — the Top News date recipe: Barlow 600 #848c9b, 0.02em tracking,
+   isolated LTR run inside the RTL row ("NOV 23, 2026 • 02:59 PM") */
+.pt-meta-date-en {
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  color: #848c9b;
+  direction: ltr;
+  unicode-bidi: isolate;
+  display: inline-block;
+}
+
 .pt-post-title {
   color: var(--c-headings);
   font-family: var(--title-font);
@@ -2283,16 +2295,14 @@ a:hover { color: var(--c-a-hover); }
 
 /* ---- 05 — روتیتر خبر اصلی (kicker): 13px/400/21px, ONE ellipsized
         line (nowrap pattern kept), 3px below it (client nudge: a touch
-        lower and closer to the headline); rendered ONLY on mobile
-        (<640) exactly as the reference shows it ------------------------- */
+        lower and closer to the headline); rendered at every breakpoint —
+        client request: the rutitr shows on desktop too (featured block +
+        desktop duo hero), not only on phones --------------------------- */
 .pt-featured-eyebrow {
   font-size: 13px;
   line-height: 21px;
   font-weight: 400;
   margin: 11px 0 3px;
-}
-@media (min-width: 640px) {
-  .pt-featured-eyebrow { display: none; }
 }
 @media (max-width: 639.9px) {
   /* the kicker's 3px separation replaces the title's own top margin

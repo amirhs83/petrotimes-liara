@@ -21,10 +21,15 @@ export function EnergySection({
       <div className="pt-block-head pt-block-head-e pt-block-head-e2 is-left">
         <h4 className="heading">energy</h4>
       </div>
-      <HighlightsHero article={main} weight="700" className="pt-hero-post pt-energy-main" />
+      <HighlightsHero
+        article={main}
+        weight="700"
+        className="pt-hero-post pt-energy-main"
+        englishDate
+      />
       <div className="pt-energy-subs">
         {subs.map((a) => (
-          <SmallPostCard key={a.url} article={a} />
+          <SmallPostCard key={a.url} article={a} englishDateSlot />
         ))}
       </div>
       <div className="pt-energy-grid">

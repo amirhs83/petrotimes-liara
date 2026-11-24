@@ -344,7 +344,7 @@ export default function PostForm({
           {/* right column: text fields */}
           <div className="lg:col-span-2 space-y-5">
             <div className="bg-white border border-zinc-200 rounded-xl p-5 space-y-4">
-              <Field label="روتیتر" hint="اختیاری — فقط در خبر اول صفحه اصلی (نسخه موبایل) نمایش داده می‌شود">
+              <Field label="روتیتر" hint="اختیاری — در خبر ویژه صفحه اصلی (موبایل و دسکتاپ) و بالای صفحه خود خبر نمایش داده می‌شود">
                 <Input
                   value={form.kicker}
                   onChange={(e) => set("kicker", e.target.value)}

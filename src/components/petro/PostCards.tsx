@@ -13,6 +13,7 @@ export function SmallPostCard({
   playlist = false,
   clamp = true,
   englishDate = false,
+  englishDateSlot = false,
 }: {
   article: Article;
   /** m = 17px (default), s = 15px (hero secondary) */
@@ -23,6 +24,9 @@ export function SmallPostCard({
   /** also render the Top News English date line (.pt-en-date, phones ≤767
    *  only via CSS) — TV playlist uses it to match the Top News meta */
   englishDate?: boolean;
+  /** swap the Persian date INSIDE the meta slot for the Top News English
+   *  line ("NOV 23, 2026 • 02:59 PM") at every breakpoint — energy subs */
+  englishDateSlot?: boolean;
 }) {
   return (
     <article className={`pt-small-post ${size === 's' ? 'pt-t-s' : ''} ${clamp ? 'pt-clamp' : ''}`}>
@@ -45,7 +49,12 @@ export function SmallPostCard({
         <h4 className="pt-post-title">
           <a href={article.url}>{article.title}</a>
         </h4>
-        <PostMeta category={null} categoryUrl={null} dateText={article.dateText} />
+        <PostMeta
+          category={null}
+          categoryUrl={null}
+          dateText={article.dateText}
+          englishDate={englishDateSlot}
+        />
         {englishDate ? <EnglishDateLine dateText={article.dateText} /> : null}
       </div>
     </article>
@@ -62,11 +71,18 @@ export function HighlightsHero({
   weight = '900',
   className = 'pt-hero-post',
   titleSize,
+  kicker = false,
+  englishDate = false,
 }: {
   article: Article;
   weight?: string;
   className?: string;
   titleSize?: string;
+  /** render the post's روتیتر (kicker) as a gray one-line eyebrow above the
+   *  title — the desktop duo hero (mobile/tablet FeaturedNews has its own) */
+  kicker?: boolean;
+  /** swap the Persian date for the Top News English line in the meta row */
+  englishDate?: boolean;
 }) {
   return (
     <div className="pt-block-wrap-mb pt-block-mb">
@@ -82,6 +98,9 @@ export function HighlightsHero({
           </a>
         </div>
         <div className="pt-content">
+          {kicker && article.eyebrow ? (
+            <p className="pt-featured-eyebrow">{article.eyebrow}</p>
+          ) : null}
           <h2
             className="pt-post-title"
             style={weight !== '700' ? { fontWeight: weight } : undefined}
@@ -92,6 +111,7 @@ export function HighlightsHero({
             category={article.category}
             categoryUrl={article.categoryUrl}
             dateText={article.dateText}
+            englishDate={englishDate}
           />
           {article.excerpt ? (
             <div className="pt-excerpt">

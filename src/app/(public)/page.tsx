@@ -65,7 +65,7 @@ export default async function Home() {
                         inline fontWeight is emitted only when weight !== '700',
                         so passing '700' lets the CSS .pt-duo-hero rule own the
                         title instead of a stale inline 900 */}
-                    <HighlightsHero article={s.heroMain} weight="700" />
+                    <HighlightsHero article={s.heroMain} weight="700" kicker />
                   </div>
                   <div className="pt-duo-secondary">
                     {s.heroSecondary.map((a) => (

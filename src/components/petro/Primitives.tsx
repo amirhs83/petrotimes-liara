@@ -1,5 +1,5 @@
 import type { ReactNode } from 'react';
-import { englishMeta } from '@/lib/content/english-meta';
+import { topNewsDateLine } from '@/lib/content/english-meta';
 
 /** ts-icons glyph (SmartMag icon font, v3.2 codepoints) */
 export function Tsi({ code, className = '', label }: { code: string; className?: string; label?: string }) {
@@ -38,16 +38,12 @@ export function Icon({ name, className = '', label }: { name: IconName; classNam
 
 /**
  * English date/time line for TV-section cards ("AUG 19, 2026 • 06:53 PM")
- * — the Top News meta recipe (Jalali → Gregorian via englishMeta, hour
- * zero-padded like the Top News raster). The markup renders on every
+ * — the Top News meta recipe (topNewsDateLine). The markup renders on every
  * breakpoint, but CSS keeps .pt-en-date display:none outside phones ≤767
  * inside the TV sections — desktop/tablet keep the Persian post-date.
  */
 export function EnglishDateLine({ dateText, className = '' }: { dateText: string; className?: string }) {
-  const meta = englishMeta(dateText, null);
-  const line = [meta.date, meta.time ? meta.time.replace(/^(\d):/, '0$1:') : '']
-    .filter(Boolean)
-    .join(' • ');
+  const line = topNewsDateLine(dateText);
   if (!line) return null;
   return (
     <p className={`pt-en-date${className ? ` ${className}` : ''}`} dir="ltr">
@@ -74,13 +70,18 @@ export function PostMeta({
   dateText,
   variant = 'light',
   above = false,
+  englishDate = false,
 }: {
   category: string | null;
   categoryUrl: string | null;
   dateText: string;
   variant?: 'light' | 'dark';
   above?: boolean;
+  /** swap the Persian date for the Top News English line
+   *  ("NOV 23, 2026 • 02:59 PM") inside the same date slot */
+  englishDate?: boolean;
 }) {
+  const enLine = englishDate ? topNewsDateLine(dateText) : null;
   return (
     <div className={`pt-post-meta ${variant === 'dark' ? 'pt-meta-dark' : ''}`}>
       {above && category ? (
@@ -103,7 +104,12 @@ export function PostMeta({
         {' '}
         <span className="meta-item date">
           <span className="date-link">
-            <time className="post-date">{dateText}</time>
+            <time
+              className={`post-date${enLine ? ' pt-meta-date-en' : ''}`}
+              dir={enLine ? 'ltr' : undefined}
+            >
+              {enLine ?? dateText}
+            </time>
           </span>
         </span>
       </div>

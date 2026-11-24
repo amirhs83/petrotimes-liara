@@ -19,7 +19,7 @@ import {
   TwitterMetaLabels,
 } from "@/components/petro/RawSeoMeta";
 import { parseVideoEmbed } from "@/lib/video-embed";
-import { faDateLong, faDigits, faTime } from "@/lib/post-format";
+import { faDigits, enDateLine } from "@/lib/post-format";
 import { absoluteUrl, relUrl, rssAlternates, siteAuthor, siteName } from "@/lib/site";
 import { articleGraph, articleBreadcrumbs } from "@/lib/seo/jsonld";
 import { countWords, readingMinutes } from "@/lib/seo/reading-time";
@@ -217,8 +217,12 @@ export default async function NewsPage({ params }: Props) {
                 </span>
                 {" "}
                 <span className="meta-item date">
-                  <time dateTime={published.toISOString()}>
-                    {faDateLong(published)} - {faTime(published)}
+                  <time
+                    dateTime={published.toISOString()}
+                    className="pt-meta-date-en"
+                    dir="ltr"
+                  >
+                    {enDateLine(published)}
                   </time>
                 </span>
                 {" "}
