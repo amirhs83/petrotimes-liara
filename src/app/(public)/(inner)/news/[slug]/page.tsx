@@ -216,7 +216,11 @@ export default async function NewsPage({ params }: Props) {
                   </Link>
                 </span>
                 {" "}
-                <span className="meta-item date">
+                <ViewCounter slug={post.slug} initialViews={post.views} />
+                {" "}
+                {/* the English date pinned to the visual LEFT end of the row
+                    (Top News placement, client request) — margin-auto in CSS */}
+                <span className="meta-item date date-en">
                   <time
                     dateTime={published.toISOString()}
                     className="pt-meta-date-en"
@@ -225,8 +229,6 @@ export default async function NewsPage({ params }: Props) {
                     {enDateLine(published)}
                   </time>
                 </span>
-                {" "}
-                <ViewCounter slug={post.slug} initialViews={post.views} />
               </div>
               {post.lead ? <p className="pt-article-lead">{post.lead}</p> : null}
 

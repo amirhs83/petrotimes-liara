@@ -13,7 +13,7 @@ import type { TickerItem, MarketQuote } from '@/lib/content';
  * like the live site's original loop — and it is draggable: press and move
  * horizontally to scrub the cards in either direction; on release the
  * right-to-left loop resumes. Implementation:
- *  - the card set is rendered 3× (`.pt-ticker-set`); the loop period is the
+ *  - the card set is rendered 3× (`​.pt-ticker-set`); the loop period is the
  *    offset distance between the first two sets (width + gap, measured at
  *    runtime, breakpoint-independent);
  *  - a rAF loop advances `translate3d` by a time-based speed and wraps the
@@ -31,12 +31,23 @@ import type { TickerItem, MarketQuote } from '@/lib/content';
  *    for the live prices themselves, so the auto-scroll is now
  *    unconditional; drag-to-browse remains the motion-free interaction.
  *
+ * PHP-ticker parity (the client's own well-known.zip implementation the
+ * backend now mirrors — see /api/market):
+ *  - hover pauses the auto-scroll (index.php mouseenter/mouseleave) — MOUSE
+ *    pointers only: touch devices keep the marquee running unconditionally
+ *    (the freeze-report above);
+ *  - a changed price flashes orange for 1s (index.php .updated-price glow,
+ *    #fa9000) exactly like the PHP card;
+ *  - quotes poll every 20s — the PHP UI polled fetch_prices.php every 5s
+ *    behind a rand(18,22)s server cache, so the effective freshness was one
+ *    cache period; 20s reproduces it without hammering the route.
+ *
  * Data integrity (master prompt §07):
  *  - product names/icons come from the content layer (ticker.items);
- *  - prices/changes come from the project's REAL market source
- *    (market.petrotimes.ir/fetch_prices.php) via the server route /api/market;
- *  - nothing is hardcoded: when the upstream publishes no value (it currently
- *    answers "N/A" for every product) the card shows an N/A unavailable state;
+ *  - prices/changes come from /api/market (the native fetch_prices.php
+ *    port scraping tradingeconomics.com commodity pages);
+ *  - nothing is hardcoded: when the upstream publishes no value the card
+ *    shows an N/A unavailable state;
  *  - no fabricated feed, no demo values.
  *
  * Display order: the three petrochemical cards of the reference (methanol,
@@ -62,6 +73,9 @@ const LOOP_COPIES = 3;
 /* auto-scroll speed, px per second, right-to-left */
 const SCROLL_SPEED = 30;
 
+/* quote refresh cadence — one PHP server-cache period (rand(18,22)s) */
+const QUOTES_POLL_MS = 20000;
+
 export function MarketTicker({ items }: { items: TickerItem[] }) {
   const [quotes, setQuotes] = useState<Record<string, MarketQuote> | null>(null);
   const [failed, setFailed] = useState(false);
@@ -84,7 +98,7 @@ export function MarketTicker({ items }: { items: TickerItem[] }) {
       }
     };
     load();
-    const timer = setInterval(load, 30000);
+    const timer = setInterval(load, QUOTES_POLL_MS);
     return () => {
       alive.current = false;
       clearInterval(timer);
@@ -211,12 +225,11 @@ export function MarketTicker({ items }: { items: TickerItem[] }) {
   }, [remeasure, quotes, failed]);
 
   /* auto-scroll: right-to-left, time-based (frame-rate independent),
-     paused ONLY while an active drag scrubs the row. The old build also
-     parked the loop under `prefers-reduced-motion: reduce` — that is what
-     froze the bar on phones whose OS enables an animations-off
-     accessibility toggle (client report "static on some mobiles"). The
-     marquee carries the live prices, so it now runs unconditionally; the
-     pointer drag stays available as the reduced-motion browsing mode. */
+     paused while an active drag scrubs the row AND while a mouse pointer
+     hovers the strip (index.php parity: mouseenter/mouseleave cleared and
+     restored the interval). Touch pointers never pause — the marquee must
+     keep running on phones (the frozen-strip client report). */
+  const hoverRef = useRef(false);
   useEffect(() => {
     let raf = 0;
     let last: number | null = null;
@@ -224,7 +237,7 @@ export function MarketTicker({ items }: { items: TickerItem[] }) {
       if (last === null) last = ts;
       const dt = Math.min(ts - last, 100); /* clamp tab-switch jumps */
       last = ts;
-      if (!draggingRef.current && periodRef.current > 0) {
+      if (!draggingRef.current && !hoverRef.current && periodRef.current > 0) {
         posRef.current -= (SCROLL_SPEED * dt) / 1000;
         normalize();
       }
@@ -278,6 +291,14 @@ export function MarketTicker({ items }: { items: TickerItem[] }) {
           data-testid="ticker-viewport"
           role="region"
           aria-label="Market prices — auto-scrolling loop, drag to browse"
+          onPointerEnter={(e) => {
+            /* index.php hover-pause, mouse pointers only (touch devices
+               keep the strip running — see the motion notes above) */
+            if (e.pointerType === 'mouse') hoverRef.current = true;
+          }}
+          onPointerLeave={(e) => {
+            if (e.pointerType === 'mouse') hoverRef.current = false;
+          }}
           onPointerDown={onPointerDown}
           onPointerMove={onPointerMove}
           onPointerUp={endDrag}
@@ -315,6 +336,24 @@ function TickerCard({ item, quote }: { item: TickerItem; quote?: MarketQuote }) 
   const price = quote?.price ?? null;
   const change = quote?.change ?? null;
   const percent = quote?.percent ?? null;
+
+  /* index.php .updated-price parity — a changed price flashes the orange
+     glow for 1s. The previous price lives in a ref and the class toggles
+     imperatively (no state churn per quote refresh); a forced reflow lets
+     back-to-back changes restart the animation. */
+  const priceRef = useRef<HTMLSpanElement | null>(null);
+  const prevPriceRef = useRef<string | null>(null);
+  useEffect(() => {
+    const prev = prevPriceRef.current;
+    prevPriceRef.current = price;
+    const el = priceRef.current;
+    if (!el || prev == null || prev === price) return;
+    el.classList.remove('is-updated');
+    void el.offsetWidth; /* restart the animation on back-to-back changes */
+    el.classList.add('is-updated');
+    const t = setTimeout(() => el.classList.remove('is-updated'), 1000);
+    return () => clearTimeout(t);
+  }, [price]);
 
   /* master prompt — desktop width classes: short/medium product names get
      the compact 224px card, standard/long names the standard 252px card.
@@ -361,7 +400,7 @@ function TickerCard({ item, quote }: { item: TickerItem; quote?: MarketQuote }) 
           </span>
         ) : (
           <>
-            <span className="pt-ticker-price">{price}</span>
+            <span ref={priceRef} className="pt-ticker-price">{price}</span>
             <span className={`pt-ticker-change ${direction}`}>
               {direction === 'up' ? '▲' : direction === 'down' ? '▼' : '•'} {change} ({percent})
             </span>

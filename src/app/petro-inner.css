@@ -101,6 +101,11 @@
 .pt-article-meta .meta-item.date { font-size: 11px; }
 .pt-article-meta .meta-item.views { font-size: 11px; direction: rtl; }
 .pt-article-meta .meta-item.views .pt-icon { font-size: 10px; margin-inline-end: 3px; }
+/* the English date pinned to the visual LEFT end of the meta row — Top News
+   placement (client request); margin-auto pushes it past the other items and
+   the — separator is dropped (Top News rows carry no separator) */
+.pt-article-meta .meta-item.date-en { margin-inline-start: auto; }
+.pt-article-meta .meta-item.date-en::before { display: none; }
 
 /* lead paragraph — the intro the CMS stores as `lead` */
 .pt-article-lead {

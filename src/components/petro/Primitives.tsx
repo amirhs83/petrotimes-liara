@@ -82,6 +82,16 @@ export function PostMeta({
   englishDate?: boolean;
 }) {
   const enLine = englishDate ? topNewsDateLine(dateText) : null;
+  /* Top News date placement (client request: "همه باید بیان سمت چپ خبر —
+     دقیقا مثل تاپ نیوز"): the English date line is pinned to the visual
+     LEFT edge of the meta row. The row flex classes differ by content:
+      - has-en-date: category (start/right) + date (end/left), spaced apart
+      - en-date-only: the date alone at the left edge (RTL flex-end) */
+  const enRowClass = !enLine
+    ? ''
+    : category && !above
+      ? ' has-en-date'
+      : ' en-date-only';
   return (
     <div className={`pt-post-meta ${variant === 'dark' ? 'pt-meta-dark' : ''}`}>
       {above && category ? (
@@ -91,7 +101,7 @@ export function PostMeta({
           </span>
         </div>
       ) : null}
-      <div className="meta-below meta-below-row">
+      <div className={`meta-below meta-below-row${enRowClass}`}>
         {category && !above ? (
           <span className="meta-item post-cat">
             <a href={categoryUrl ?? '#'} className="post-cat-link" rel="category">

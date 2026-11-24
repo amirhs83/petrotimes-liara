@@ -936,6 +936,12 @@ a:hover { color: var(--c-a-hover); }
 .pt-ticker-change.down { color: #e0483e; }
 .pt-ticker-change.flat { color: #8a8a8a; }
 .pt-ticker-na { color: #8a8a8a; letter-spacing: 0.02em; }
+/* index.php .updated-price parity — a changed price flashes the 1s orange glow */
+.pt-ticker-price.is-updated { animation: pt-ticker-glow 1s ease-in-out; }
+@keyframes pt-ticker-glow {
+  0% { background-color: #fa9000; }
+  100% { background-color: transparent; }
+}
 /* tablet + desktop geometry steps live in the geometry-token override
    blocks (min-width:768 / min-width:1025) — only the menu-glyph bar
    offsets (derived from the glyph height) remain per breakpoint */
@@ -1060,6 +1066,23 @@ a:hover { color: var(--c-a-hover); }
   direction: ltr;
   unicode-bidi: isolate;
   display: inline-block;
+}
+
+/* Top News date placement (client request) — the English date pinned to the
+   visual LEFT edge of the meta row:
+   - has-en-date: category stays at the row start (right), the date lands at
+     the far left (space-between); the — separator is dropped (Top News rows
+     carry no separator)
+   - en-date-only: the date alone at the left edge (RTL flex-end = left) */
+.pt-post-meta .meta-below-row.has-en-date {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+}
+.pt-post-meta .meta-below-row.has-en-date .meta-item::before { display: none; }
+.pt-post-meta .meta-below-row.en-date-only {
+  display: flex;
+  justify-content: flex-end;
 }
 
 .pt-post-title {
