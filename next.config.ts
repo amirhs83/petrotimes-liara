@@ -46,9 +46,7 @@ const securityHeaders = [
 
 const nextConfig: NextConfig = {
   output: "standalone",
-  typescript: {
-    ignoreBuildErrors: true,
-  },
+  allowedDevOrigins: ["127.0.0.1", "localhost"],
   reactStrictMode: false,
   // SEO parity with the WordPress reference: no X-Powered-By header and no
   // generator meta — the stack must not be advertised.

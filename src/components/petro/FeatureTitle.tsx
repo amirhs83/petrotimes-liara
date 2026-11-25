@@ -8,8 +8,8 @@ import { PostMeta } from './Primitives';
  */
 export function FeatureTitle({ items }: { items: FeatureArticle[] }) {
   return (
-    <div data-testid="feature-title">
-      <h4 className="pt-feature-heading">FEATURE&zwnj;&zwnj;&zwnj;&zwnj;&zwnj;&zwnj; TITLE</h4>
+    <div data-testid="feature-title" className="pt-feature-widget">
+      <h4 className="pt-feature-heading">FEATURE TITLE</h4>
       <div className="pt-feature-list">
         {items.map((item) => (
           <article className="pt-feature-item" key={item.rankIcon}>

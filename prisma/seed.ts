@@ -37,7 +37,6 @@ const categories = [
 const homeSections = [
   { key: "hero", name: "سرخط خبرها", capacity: 5 }, // [1] hero + [2..5] secondary
   { key: "videos", name: "پترو تایمز TV", capacity: 6 }, // [1] player + [2..6] playlist
-  { key: "topnews", name: "مطالب ویژه سایدبار", capacity: 4 },
   { key: "magazine", name: "مجله", capacity: 5 },
   { key: "feature", name: "برترین‌ها", capacity: 3 },
   { key: "energy", name: "انرژی", capacity: 3 }, // [1] main + [2..3] subs
@@ -271,6 +270,8 @@ interface SeedPost {
   hoursAgo?: number;
   tags?: string[]; // defaults to 3 from the category pool
   keywords?: string; // meta keywords
+  videoType?: "NONE" | "UPLOAD" | "APARAT" | "YOUTUBE";
+  videoUrl?: string;
 }
 
 const seedPosts: SeedPost[] = [
@@ -337,6 +338,8 @@ const seedPosts: SeedPost[] = [
     lead: "ویدیویی کوتاه و جمع‌بندی‌شده از مهم‌ترین رخدادهای بازار نفت در هفته‌ای که گذشت.",
     category: "naft",
     image: IMG.oil2,
+    videoType: "UPLOAD",
+    videoUrl: "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerBlazes.mp4",
     placements: [{ section: "videos", position: 1 }],
     views: 3900,
     hoursAgo: 5,
@@ -392,14 +395,13 @@ const seedPosts: SeedPost[] = [
     hoursAgo: 48,
   },
 
-  // ---------- TOPNEWS SIDEBAR (1 first + 3 items) ----------
+  // ---------- TOPNEWS SIDEBAR (REMOVED) ----------
   {
     slug: "قیمت-خوراک-پتروشیمی‌ها-تفاهم-تازه",
     title: "تفاهم تازه درباره قیمت‌گذاری خوراک پتروشیمی‌ها",
     lead: "گفت‌وگوها برای شفاف‌سازی مکانیسم قیمت‌گذاری خوراک واحدهای پتروشیمی وارد مرحله اجرایی شده است.",
     category: "petroshimi",
     image: IMG.deal,
-    placements: [{ section: "topnews", position: 1 }],
     views: 3400,
     hoursAgo: 4,
   },
@@ -409,7 +411,6 @@ const seedPosts: SeedPost[] = [
     lead: "روند مصرف فرآورده‌های نفتی داخلی، بحث مدیریت تقاضا را دوباره در کانون توجه قرار داده است.",
     category: "palayesh-va-pakhsh",
     image: IMG.chart,
-    placements: [{ section: "topnews", position: 2 }],
     views: 2100,
     hoursAgo: 8,
   },
@@ -419,7 +420,6 @@ const seedPosts: SeedPost[] = [
     lead: "تحولات دیپلماسی انرژی می‌تواند نقشه راه صادرات را در ماه‌های آینده تغییر دهد.",
     category: "bein-al-melal",
     image: IMG.politics,
-    placements: [{ section: "topnews", position: 3 }],
     views: 2600,
     hoursAgo: 11,
   },
@@ -429,7 +429,6 @@ const seedPosts: SeedPost[] = [
     lead: "سناریوهای محتمل عرضه و تقاضای فرآورده‌ها در ماه‌های باقی‌مانده سال از نگاه تحلیلگران.",
     category: "naft",
     image: IMG.oil3,
-    placements: [{ section: "topnews", position: 4 }],
     views: 1800,
     hoursAgo: 14,
   },
@@ -825,6 +824,8 @@ async function main() {
         publishedAt,
         views: p.views ?? 100,
         hasOwnPage: true,
+        videoType: p.videoType ?? (p.videoUrl ? "UPLOAD" : "NONE"),
+        videoUrl: p.videoUrl ?? null,
         metaTitle,
         metaDescription,
         metaKeywords,

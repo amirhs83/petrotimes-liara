@@ -6,8 +6,6 @@ export function homeSectionLabel(key: string, fallback: string): string {
       return "سرخط خبرها (هیرو + ۴ کارت)";
     case "videos":
       return "پترو تایمز TV (پخش + پلی‌لیست)";
-    case "topnews":
-      return "مطالب ویژه سایدبار";
     case "magazine":
       return "مجله";
     case "feature":

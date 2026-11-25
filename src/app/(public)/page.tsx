@@ -90,19 +90,8 @@ export default async function Home() {
                 <TvSection player={s.tvPlayer} playlist={s.tvPlaylist} />
               </div>
               <aside className="pt-sidebar-col">
-                <div className="pt-widget pt-topnews-widget">
-                  <div className="pt-block-head pt-block-head-d is-left">
-                    <h4 className="heading">{s.topNewsLabel.label}</h4>
-                  </div>
-                  <SmallPostCard article={s.topNewsLabel.article} />
-                </div>
-                <div className="pt-widget pt-topnews-items">
-                  {s.topNewsItems.map((a) => (
-                    <SmallPostCard key={a.url} article={a} />
-                  ))}
-                </div>
-                <MagazineSlider label={s.magazine.label} articles={s.magazine.articles} />
                 <FeatureTitle items={s.featureTitle.items} />
+                <MagazineSlider label={s.magazine.label} articles={s.magazine.articles} />
               </aside>
             </div>
           </div>

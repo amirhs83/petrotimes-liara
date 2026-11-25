@@ -4,6 +4,8 @@ import { useEffect, useRef, useState } from "react";
 import { useEditor, EditorContent, type Editor } from "@tiptap/react";
 import StarterKit from "@tiptap/starter-kit";
 import Image from "@tiptap/extension-image";
+import Link from "@tiptap/extension-link";
+import Underline from "@tiptap/extension-underline";
 import { VideoNode, VideoEmbedNode } from "./extensions";
 import { uploadMediaFile } from "@/lib/upload-client";
 import { parseVideoEmbed } from "@/lib/video-embed";
@@ -95,10 +97,11 @@ export default function RichTextEditor({
     extensions: [
       StarterKit.configure({
         heading: { levels: [2, 3, 4] },
-        link: {
-          openOnClick: false,
-          HTMLAttributes: { class: "text-petro-brand-ink underline" },
-        },
+      }),
+      Underline,
+      Link.configure({
+        openOnClick: false,
+        HTMLAttributes: { class: "text-petro-brand-ink underline" },
       }),
       Image.configure({ inline: false }),
       VideoNode,
@@ -121,7 +124,7 @@ export default function RichTextEditor({
   useEffect(() => {
     if (!editor) return;
     if (value !== editor.getHTML()) {
-      editor.commands.setContent(value, { emitUpdate: false });
+      editor.commands.setContent(value, false);
     }
   }, [value, editor]);
 

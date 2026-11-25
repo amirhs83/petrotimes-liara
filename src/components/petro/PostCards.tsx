@@ -73,6 +73,7 @@ export function HighlightsHero({
   /** render the post's روتیتر (kicker) as a gray one-line eyebrow above the
    *  title — the desktop duo hero (mobile/tablet FeaturedNews has its own) */
   kicker?: boolean;
+  englishDate?: boolean;
 }) {
   return (
     <div className="pt-block-wrap-mb pt-block-mb">
@@ -102,6 +103,7 @@ export function HighlightsHero({
             categoryUrl={article.categoryUrl}
             dateText={article.dateText}
           />
+          {englishDate ? <EnglishDateLine dateText={article.dateText} /> : null}
           {article.excerpt ? (
             <div className="pt-excerpt">
               <p>{article.excerpt}</p>

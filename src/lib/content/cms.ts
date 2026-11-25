@@ -68,6 +68,8 @@ function toArticle(p: any): Article {
     image,
     imageFull: image,
     eyebrow: p.kicker || null,
+    videoType: p.videoType ?? null,
+    videoUrl: p.videoUrl ? mediaUrl(p.videoUrl) : null,
   };
 }
 
@@ -206,11 +208,10 @@ export async function buildHomepageData(): Promise<HomepageData> {
     console.error("[cms] advertise1 bootstrap failed:", err)
   );
 
-  const [hero, videos, topnews, magazine, feature, energy, advertise1, advertise, mostViewed, latest, menu] =
+  const [hero, videos, magazine, feature, energy, advertise1, advertise, mostViewed, latest, menu] =
     await Promise.all([
       getSectionPosts("hero"),
       getSectionPosts("videos"),
-      getSectionPosts("topnews"),
       getSectionPosts("magazine"),
       getSectionPosts("feature"),
       getSectionPosts("energy"),
@@ -232,8 +233,6 @@ export async function buildHomepageData(): Promise<HomepageData> {
       heroSecondary: hero.slice(1, 5),
       tvPlayer: videos[0] ?? snapshot.sections.tvPlayer,
       tvPlaylist: videos.slice(1, 6),
-      topNewsLabel: { label: "top news", article: topnews[0] ?? snapshot.sections.topNewsLabel.article },
-      topNewsItems: topnews.slice(1, 4),
       magazine: { label: "magazine", articles: magazine.slice(0, 5) },
       featureTitle: {
         label: "feature title",

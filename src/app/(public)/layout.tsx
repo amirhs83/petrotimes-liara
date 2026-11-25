@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import "../petro.css";
+import "../petro-desktop-ux.css";
 import { siteDescription, siteName, siteNameEn, siteUrl } from "@/lib/site";
 
 /**

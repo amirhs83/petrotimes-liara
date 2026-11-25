@@ -48,6 +48,8 @@ function mapPost(p: any): PostFormInitial {
             width: null,
             height: null,
             alt: "",
+            cropState: null,
+            cropSourceId: null,
           }
         : null,
     videoDuration: p.videoDuration ? String(p.videoDuration) : "",

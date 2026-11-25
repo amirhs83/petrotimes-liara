@@ -13,6 +13,7 @@ import { ViewCounter } from "@/components/petro/ViewCounter";
 import { PostMeta } from "@/components/petro/Primitives";
 import ShareRow from "@/components/petro/ShareRow";
 import { JsonLd } from "@/components/petro/JsonLd";
+import { ArticleVideoPlayer } from "@/components/petro/ArticleVideoPlayer";
 import {
   OgImageSecureUrl,
   OgUpdatedTime,
@@ -257,7 +258,11 @@ export default async function NewsPage({ params }: Props) {
                   />
                 </div>
               ) : post.videoType === "UPLOAD" && post.videoUrl ? (
-                <video className="pt-article-video" src={post.videoUrl} controls preload="metadata" />
+                <ArticleVideoPlayer
+                  src={post.videoUrl}
+                  poster={heroImageSrc ?? undefined}
+                  loopDuration={5}
+                />
               ) : null}
 
               <div className="pt-article-body" dangerouslySetInnerHTML={{ __html: post.body }} />

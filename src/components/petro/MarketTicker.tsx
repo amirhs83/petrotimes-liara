@@ -81,7 +81,31 @@ const QUOTES_POLL_MS = 15000;
 export function MarketTicker({ items }: { items: TickerItem[] }) {
   const [quotes, setQuotes] = useState<Record<string, MarketQuote> | null>(null);
   const [failed, setFailed] = useState(false);
+  const [panelOpen, setPanelOpen] = useState(false);
   const alive = useRef(true);
+  const widgetRef = useRef<HTMLDivElement | null>(null);
+  const toggleBtnRef = useRef<HTMLButtonElement | null>(null);
+
+  useEffect(() => {
+    if (!panelOpen) return;
+    const onPointerDown = (e: PointerEvent) => {
+      if (widgetRef.current && !widgetRef.current.contains(e.target as Node)) {
+        setPanelOpen(false);
+      }
+    };
+    const onKeyDown = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') {
+        setPanelOpen(false);
+        toggleBtnRef.current?.focus();
+      }
+    };
+    document.addEventListener('pointerdown', onPointerDown);
+    window.addEventListener('keydown', onKeyDown);
+    return () => {
+      document.removeEventListener('pointerdown', onPointerDown);
+      window.removeEventListener('keydown', onKeyDown);
+    };
+  }, [panelOpen]);
 
   useEffect(() => {
     alive.current = true;
@@ -272,21 +296,29 @@ export function MarketTicker({ items }: { items: TickerItem[] }) {
   };
 
   return (
-    <div className="pt-ticker-widget" data-testid="market-ticker">
+    <div className="pt-ticker-widget" ref={widgetRef} data-testid="market-ticker">
       <div className="pt-ticker-bar" dir="ltr">
-        {/* market-menu glyph — the project has no market product-list
-            capability, so it stays the inert visual element of the reference
-            (aria-hidden), not a duplicate of the main menu */}
-        <span className="pt-ticker-menu" aria-hidden="true">
-          <span className="inner" />
-          {/* phone geometry reference (Bloomberg mobile screenshot): the
-              market-menu glyph is the thin chevron. Rendered here for every
-              breakpoint; CSS shows it ONLY ≤767 and keeps the three-bar
-              glyph for tablet/desktop untouched. */}
-          <svg className="pt-ticker-caret" viewBox="0 0 11 7" width="11" height="7" focusable="false">
+        <button
+          ref={toggleBtnRef}
+          type="button"
+          className={`pt-ticker-menu${panelOpen ? ' is-open' : ''}`}
+          aria-expanded={panelOpen}
+          aria-controls="pt-ticker-drawer"
+          aria-label={panelOpen ? 'Close all market prices' : 'Show all market prices'}
+          title={panelOpen ? 'بستن لیست قیمت‌ها' : 'نمایش همه قیمت‌ها'}
+          onClick={() => setPanelOpen((v) => !v)}
+        >
+          <svg
+            className="pt-ticker-caret"
+            viewBox="0 0 11 7"
+            width="11"
+            height="7"
+            focusable="false"
+            aria-hidden="true"
+          >
             <path d="M1 1l4.5 5L10 1" fill="none" stroke="currentColor" strokeWidth="2" />
           </svg>
-        </span>
+        </button>
         <div
           className={`pt-ticker-viewport${dragging ? ' is-dragging' : ''}`}
           ref={viewportRef}
@@ -321,6 +353,43 @@ export function MarketTicker({ items }: { items: TickerItem[] }) {
           </div>
         </div>
       </div>
+
+      {panelOpen ? (
+        <div
+          id="pt-ticker-drawer"
+          className="pt-ticker-drawer"
+          role="dialog"
+          aria-label="Market prices watchlist"
+          dir="ltr"
+          data-testid="ticker-drawer"
+        >
+          <div className="pt-ticker-drawer-head">
+            <div className="pt-ticker-drawer-title">
+              <span className={`pt-ticker-live-dot${failed ? ' is-stale' : ''}`} aria-hidden="true" />
+              <span>Market Watch</span>
+              <span className="pt-ticker-drawer-count">{ordered.length}</span>
+            </div>
+            <button
+              type="button"
+              className="pt-ticker-drawer-close"
+              aria-label="Close market prices"
+              onClick={() => {
+                setPanelOpen(false);
+                toggleBtnRef.current?.focus();
+              }}
+            >
+              <svg viewBox="0 0 12 12" width="12" height="12" focusable="false" aria-hidden="true">
+                <path d="M2 2l8 8M10 2l-8 8" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" />
+              </svg>
+            </button>
+          </div>
+          <div className="pt-ticker-drawer-list" role="list">
+            {ordered.map((it) => (
+              <TickerDrawerRow key={it.key} item={it} quote={quotes?.[it.key]} />
+            ))}
+          </div>
+        </div>
+      ) : null}
     </div>
   );
 }
@@ -334,15 +403,23 @@ function parseNum(v: string | null | undefined): number | null {
   return Number.isFinite(n) ? n : null;
 }
 
-function TickerCard({ item, quote }: { item: TickerItem; quote?: MarketQuote }) {
+function formatQuoteState(quote?: MarketQuote) {
   const price = quote?.price ?? null;
   const change = quote?.change ?? null;
   const percent = quote?.percent ?? null;
+  const priceNum = parseNum(price);
+  const changeNum = parseNum(change);
+  const unavailable =
+    quote === undefined /* still loading */ ||
+    priceNum === null ||
+    changeNum === null;
+  const direction: 'up' | 'down' | 'flat' =
+    unavailable || changeNum === 0 ? 'flat' : changeNum > 0 ? 'up' : 'down';
+  return { price, change, percent, unavailable, direction };
+}
 
-  /* index.php .updated-price parity — a changed price flashes the orange
-     glow for 1s. The previous price lives in a ref and the class toggles
-     imperatively (no state churn per quote refresh); a forced reflow lets
-     back-to-back changes restart the animation. */
+/* index.php .updated-price parity — a changed price flashes the orange glow for 1s */
+function usePriceFlash(price: string | null) {
   const priceRef = useRef<HTMLSpanElement | null>(null);
   const prevPriceRef = useRef<string | null>(null);
   useEffect(() => {
@@ -356,6 +433,49 @@ function TickerCard({ item, quote }: { item: TickerItem; quote?: MarketQuote }) 
     const t = setTimeout(() => el.classList.remove('is-updated'), 1000);
     return () => clearTimeout(t);
   }, [price]);
+  return priceRef;
+}
+
+function TickerDrawerRow({ item, quote }: { item: TickerItem; quote?: MarketQuote }) {
+  const { price, change, percent, unavailable, direction } = formatQuoteState(quote);
+  const priceRef = usePriceFlash(price);
+
+  return (
+    <div className="pt-ticker-drawer-row" role="listitem" data-key={item.key}>
+      <div className="pt-ticker-drawer-asset">
+        <img
+          className="pt-ticker-icon"
+          src={CARD_ICONS[item.key] ?? item.icon}
+          alt=""
+          width={18}
+          height={18}
+          loading="eager"
+          decoding="async"
+          draggable={false}
+        />
+        <span className="pt-ticker-drawer-name">{item.name}</span>
+      </div>
+      <div className="pt-ticker-drawer-quote">
+        {unavailable ? (
+          <span className="pt-ticker-na">{quote === undefined ? '…' : 'N/A'}</span>
+        ) : (
+          <>
+            <span ref={priceRef} className="pt-ticker-drawer-price">
+              {price}
+            </span>
+            <span className={`pt-ticker-change pt-ticker-drawer-change ${direction}`}>
+              {direction === 'up' ? '▲' : direction === 'down' ? '▼' : '•'} {change} ({percent})
+            </span>
+          </>
+        )}
+      </div>
+    </div>
+  );
+}
+
+function TickerCard({ item, quote }: { item: TickerItem; quote?: MarketQuote }) {
+  const { price, change, percent, unavailable, direction } = formatQuoteState(quote);
+  const priceRef = usePriceFlash(price);
 
   /* master prompt — desktop width classes: short/medium product names get
      the compact 224px card, standard/long names the standard 252px card.
@@ -363,15 +483,6 @@ function TickerCard({ item, quote }: { item: TickerItem; quote?: MarketQuote }) 
      their own measured widths. Name length is the stable content signal —
      market values change per fetch, names do not. */
   const compact = item.name.trim().length <= 9;
-
-  const priceNum = parseNum(price);
-  const changeNum = parseNum(change);
-  const unavailable =
-    quote === undefined /* still loading */ ||
-    priceNum === null ||
-    changeNum === null;
-
-  const direction = unavailable || changeNum === 0 ? 'flat' : changeNum > 0 ? 'up' : 'down';
 
   return (
     <div

@@ -140,7 +140,7 @@ export async function POST(req: Request) {
       width,
       height,
       alt,
-      cropState: cropState as Prisma.InputJsonValue | null | undefined,
+      cropState: cropState ? (cropState as Prisma.InputJsonValue) : Prisma.JsonNull,
       cropSourceId,
     },
   });

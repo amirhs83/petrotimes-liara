@@ -34,6 +34,7 @@ export function organizationNode() {
     "@type": "Organization",
     "@id": absoluteUrl("/#organization"),
     name: siteName,
+    alternateName: ["پتروتایمز", siteNameEn, "petrotimes", "Petrotimes"],
     url: absoluteUrl("/"),
     sameAs: siteSocials,
     logo: {
@@ -55,7 +56,7 @@ export function websiteNode() {
     "@id": absoluteUrl("/#website"),
     url: absoluteUrl("/"),
     name: siteName,
-    alternateName: siteNameEn,
+    alternateName: ["پتروتایمز", siteNameEn, "petrotimes", "Petrotimes"],
     description: siteDescription,
     inLanguage: LANG,
     publisher: { "@id": absoluteUrl("/#organization") },
@@ -280,9 +281,15 @@ export function articleBreadcrumbs(article: {
   category: { name: string; slug: string } | Article["category"];
 }): BreadcrumbInput[] {
   const cat = article.category;
+  const catBreadcrumb =
+    typeof cat === "object" && cat !== null
+      ? [{ label: cat.name, href: `/category/${cat.slug}` }]
+      : typeof cat === "string" && cat.trim()
+      ? [{ label: cat }]
+      : [];
   return [
     { label: "خانه", href: "/" },
-    ...(cat ? [{ label: cat.name, href: `/category/${cat.slug}` }] : []),
+    ...catBreadcrumb,
     { label: article.title },
   ];
 }

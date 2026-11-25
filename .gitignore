@@ -56,6 +56,10 @@ server.log
 /db/*.db-shm
 /db/*.db-wal
 /db/*.db-journal
+/prisma/*.db*
+
+# local upload storage
+/storage/
 
 # generated sqlite variant of the prisma schema
 /prisma/schema.local.prisma

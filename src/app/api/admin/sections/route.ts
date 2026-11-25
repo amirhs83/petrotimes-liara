@@ -41,18 +41,18 @@ export async function GET(req: Request) {
   const LAYOUT_ORDER = [
     "hero",
     "videos",
-    "topnews",
-    "magazine",
     "feature",
+    "magazine",
     "energy",
     "advertise1",
     "advertise",
   ];
-  sections.sort(
+  const filtered = sections.filter((s) => s.key !== "topnews");
+  filtered.sort(
     (a, b) =>
       LAYOUT_ORDER.indexOf(a.key) - LAYOUT_ORDER.indexOf(b.key) ||
       a.key.localeCompare(b.key)
   );
 
-  return NextResponse.json({ ok: true, items: sections });
+  return NextResponse.json({ ok: true, items: filtered });
 }

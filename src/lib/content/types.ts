@@ -29,6 +29,9 @@ export interface Article {
    * (additive optional field — when absent the element is not rendered).
    */
   eyebrow?: string | null;
+  /** Video URL for video-type posts (e.g. TV Petro Times preview loop). */
+  videoUrl?: string | null;
+  videoType?: string | null;
 }
 
 /** FEATURE TITLE ranked item (rank icon PNG path + article fields). */
@@ -110,8 +113,8 @@ export interface HomepageData {
     heroSecondary: Article[];
     tvPlayer: Article;
     tvPlaylist: Article[];
-    topNewsLabel: { label: string; article: Article };
-    topNewsItems: Article[];
+    topNewsLabel?: { label: string; article: Article };
+    topNewsItems?: Article[];
     magazine: { label: string; articles: Article[] };
     featureTitle: { label: string; items: FeatureArticle[] };
     energyMain: Article;

@@ -74,9 +74,21 @@ export function postDataFromInput(
   input: PostInput,
   slug: string,
   cleanBody: string,
+  forUpdate: true
+): Prisma.PostUpdateInput;
+export function postDataFromInput(
+  input: PostInput,
+  slug: string,
+  cleanBody: string,
+  forUpdate?: false
+): Prisma.PostCreateInput;
+export function postDataFromInput(
+  input: PostInput,
+  slug: string,
+  cleanBody: string,
   forUpdate = false
-): Prisma.PostCreateInput {
-  return {
+): Prisma.PostCreateInput | Prisma.PostUpdateInput {
+  const data: any = {
     slug,
     kicker: input.kicker?.trim() || null,
     title: input.title,
@@ -108,4 +120,5 @@ export function postDataFromInput(
         : {}),
     canonicalUrl: input.canonicalUrl || null,
   };
+  return data;
 }

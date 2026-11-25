@@ -1,5 +1,15 @@
-import type { CommodityPrice } from "@/lib/news-data";
 import symbolsJson from "@/data/symbols.json";
+
+export interface CommodityPrice {
+  symbol: string;
+  name: string;
+  nameFa: string;
+  price: string;
+  change: string;
+  changePercent: string;
+  up: boolean;
+  icon: string;
+}
 
 const UPSTREAM_URL = "https://tsetmc-api-server-1.onrender.com/watchlist";
 // Render free tier cold-starts can take 10-30s; 5s aborted almost every

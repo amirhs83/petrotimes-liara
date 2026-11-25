@@ -829,7 +829,8 @@ a:hover { color: var(--c-a-hover); }
    only the cards strip scrolls horizontally (page never overflows).
    Prices come from the real market source via /api/market — no hardcoded
    values; unpublished values render the N/A state. */
-.pt-ticker-section { background: #fff; margin-top: var(--header-to-ticker-gap); }
+.pt-ticker-section { position: relative; z-index: 450; background: #fff; margin-top: var(--header-to-ticker-gap); }
+.pt-ticker-widget { position: relative; }
 .pt-ticker-bar {
   display: flex; align-items: center;
   background: #fff;
@@ -841,23 +842,208 @@ a:hover { color: var(--c-a-hover); }
 }
 .pt-ticker-menu {
   flex-shrink: 0;
-  width: var(--market-ticker-menu-width); height: var(--market-ticker-menu-height);
-  position: relative;
-  margin-right: var(--market-ticker-menu-gap);
+  width: 34px;
+  height: 34px;
+  margin-right: 12px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 8px;
+  border: 1px solid #e4e4e7;
+  background: #f8f8f8;
+  color: #111111;
+  cursor: pointer;
+  padding: 0;
+  transition: background-color 0.16s ease, border-color 0.16s ease, color 0.16s ease;
 }
-.pt-ticker-menu .inner,
-.pt-ticker-menu::before,
-.pt-ticker-menu::after {
-  content: ""; position: absolute; left: 0; right: 0;
-  height: 2px; background: #111111;
+.pt-ticker-menu:hover {
+  background: #efefef;
+  border-color: #d4d4d8;
 }
-.pt-ticker-menu::before { top: 0; }
-.pt-ticker-menu .inner { top: 4px; }
-.pt-ticker-menu::after { top: 8px; }
-/* phone-only chevron glyph (Bloomberg mobile reference, §08): rendered in
-   the JSX for every breakpoint, shown ONLY ≤767 — tablet/desktop keep the
-   three-bar glyph above, untouched */
-.pt-ticker-caret { display: none; }
+.pt-ticker-menu.is-open {
+  background: #111111;
+  border-color: #111111;
+  color: #ffffff;
+}
+.pt-ticker-menu:focus-visible {
+  outline: 2px solid #1b61c8;
+  outline-offset: 2px;
+}
+/* shared down-chevron glyph across desktop, tablet, and mobile */
+.pt-ticker-caret {
+  display: block;
+  width: 11px;
+  height: 7px;
+  transition: transform 0.22s cubic-bezier(0.22, 1, 0.36, 1);
+}
+.pt-ticker-menu.is-open .pt-ticker-caret {
+  transform: rotate(180deg);
+}
+
+/* Expandable Market Watch drawer — compact non-blocking popover anchored
+   directly beneath the ticker bar with independent vertical scrolling */
+.pt-ticker-drawer {
+  position: absolute;
+  top: calc(100% + 6px);
+  left: 10px;
+  right: 10px;
+  max-width: 400px;
+  max-height: min(55vh, 370px);
+  display: flex;
+  flex-direction: column;
+  background: #131313;
+  color: #f1f1f1;
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  border-radius: 12px;
+  box-shadow: 0 20px 44px rgba(0, 0, 0, 0.34), 0 4px 12px rgba(0, 0, 0, 0.18);
+  overflow: hidden;
+  z-index: 460;
+  font-family: var(--ui-font);
+  animation: pt-ticker-drawer-in 0.18s cubic-bezier(0.22, 1, 0.36, 1);
+}
+@keyframes pt-ticker-drawer-in {
+  from { opacity: 0; transform: translateY(-6px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+.pt-ticker-drawer-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 11px 14px;
+  background: #1a1a1a;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.09);
+  flex-shrink: 0;
+}
+.pt-ticker-drawer-title {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  color: #ffffff;
+}
+.pt-ticker-live-dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: #00c878;
+  box-shadow: 0 0 0 3px rgba(0, 200, 120, 0.18);
+  flex-shrink: 0;
+}
+.pt-ticker-live-dot.is-stale {
+  background: #f59e0b;
+  box-shadow: 0 0 0 3px rgba(245, 158, 11, 0.18);
+}
+.pt-ticker-drawer-count {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 22px;
+  height: 18px;
+  padding: 0 6px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.1);
+  color: #d4d4d8;
+  font-size: 11px;
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+}
+.pt-ticker-drawer-close {
+  width: 28px;
+  height: 28px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 6px;
+  color: #a1a1aa;
+  transition: background-color 0.15s ease, color 0.15s ease;
+}
+.pt-ticker-drawer-close:hover {
+  background: rgba(255, 255, 255, 0.1);
+  color: #ffffff;
+}
+.pt-ticker-drawer-list {
+  flex: 1 1 auto;
+  min-height: 0;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: thin;
+  scrollbar-color: rgba(255, 255, 255, 0.22) transparent;
+}
+.pt-ticker-drawer-list::-webkit-scrollbar { width: 6px; }
+.pt-ticker-drawer-list::-webkit-scrollbar-track { background: transparent; }
+.pt-ticker-drawer-list::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.2);
+  border-radius: 3px;
+}
+.pt-ticker-drawer-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 10px 14px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+  transition: background-color 0.14s ease;
+}
+.pt-ticker-drawer-row:last-child { border-bottom: 0; }
+.pt-ticker-drawer-row:hover { background: rgba(255, 255, 255, 0.04); }
+.pt-ticker-drawer-asset {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  min-width: 0;
+}
+.pt-ticker-drawer-asset .pt-ticker-icon {
+  width: 18px;
+  height: 18px;
+}
+.pt-ticker-drawer-name {
+  font-size: 13px;
+  font-weight: 600;
+  color: #ffffff;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.pt-ticker-drawer-quote {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+  flex-shrink: 0;
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+.pt-ticker-drawer-price {
+  font-size: 13px;
+  font-weight: 700;
+  color: #ffffff;
+  padding: 1px 4px;
+  border-radius: 3px;
+}
+.pt-ticker-drawer-price.is-updated { animation: pt-ticker-glow 1s ease-in-out; }
+.pt-ticker-drawer-change {
+  min-width: 118px;
+  text-align: right;
+  font-size: 11.5px;
+  font-weight: 600;
+}
+@media (min-width: 768px) {
+  .pt-ticker-drawer {
+    left: 16px;
+    right: auto;
+    width: min(410px, calc(100vw - 32px));
+    max-width: none;
+    max-height: min(58vh, 420px);
+  }
+}
+@media (min-width: 1025px) {
+  .pt-ticker-drawer {
+    left: 20px;
+    width: min(416px, calc(100vw - 40px));
+  }
+}
 .pt-ticker-viewport {
   flex: 1 1 auto;
   min-width: 0;
@@ -942,17 +1128,8 @@ a:hover { color: var(--c-a-hover); }
   0% { background-color: #fa9000; }
   100% { background-color: transparent; }
 }
-/* tablet + desktop geometry steps live in the geometry-token override
-   blocks (min-width:768 / min-width:1025) — only the menu-glyph bar
-   offsets (derived from the glyph height) remain per breakpoint */
-@media (min-width: 768px) {
-  .pt-ticker-menu .inner { top: 5px; }
-  .pt-ticker-menu::after { top: 10px; }
-}
 /* desktop — natural extension of the mobile reference (no grid/dashboard) */
 @media (min-width: 1025px) {
-  .pt-ticker-menu .inner { top: 5.5px; }
-  .pt-ticker-menu::after { top: 11px; }
   /* master prompt — desktop cards render as SINGLE-ROW pills (reference
      form): [name icon] [price ▲ change (percent)] inside the 39px card;
      cards never stretch, fixed widths 252px standard / 224px compact
@@ -1518,14 +1695,17 @@ a:hover { color: var(--c-a-hover); }
 .pt-magazine-arrow:hover { transform: translateY(calc(-50% - 2px)); }
 
 /* ------------------------------------------------------- feature title ----- */
+.pt-feature-widget {
+  margin-bottom: 35px;
+}
 .pt-feature-heading {
   font-size: 21px;
   font-weight: 600;
   color: var(--c-contrast-900);
   line-height: 31.5px;
   margin: 0 0 20px;
-  width: 144px;
-  max-width: 100%;
+  width: auto;
+  white-space: nowrap;
 }
 .pt-feature-list { display: flex; flex-direction: column; gap: 20px; }
 .pt-feature-item { display: flex; align-items: flex-start; gap: 9px; }
@@ -1952,7 +2132,7 @@ a:hover { color: var(--c-a-hover); }
   .pt-magazine { margin-top: 34px; padding-bottom: 45px; }
 
   /* feature heading: one line, flush to the container edge (measured) */
-  .pt-feature-heading { width: 46%; margin-inline-start: 0; }
+  .pt-feature-heading { width: auto; white-space: nowrap; margin-inline-start: 0; }
   .pt-feature-item .pt-post-title { font-size: 14px; }
 
   /* energy: hero title 20px, hero→subs 69px, subs gap 14 (live pitch 90) */
@@ -2158,24 +2338,31 @@ a:hover { color: var(--c-a-hover); }
     contain: layout paint;
   }
 
-  /* §08 market menu — 33px container OUTSIDE the scroll region, thin
-     chevron (Bloomberg mobile form) 11×7 ink at 11px inside it, 4px gap
-     after the container → first card lands at exactly 37px from the page
-     edge (0 bar padding + 33 + 4). The three-bar glyph is tablet/desktop. */
+  /* §08 market menu — 37px lead zone OUTSIDE the scroll region (6px inset +
+     29px tap button + 2px gap), chevron 11×7 centered inside the button. */
   .pt-ticker-menu {
-    width: var(--pt-mobile-market-menu-width);
-    height: 7px;
-    margin-right: var(--pt-mobile-market-menu-gap);
+    width: 29px;
+    height: 34px;
+    margin-left: 6px;
+    margin-right: 2px;
+    border: 0;
+    background: transparent;
+    border-radius: 7px;
     color: #111111;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0;
   }
-  .pt-ticker-menu::before,
-  .pt-ticker-menu .inner,
-  .pt-ticker-menu::after { display: none; }
+  .pt-ticker-menu:hover {
+    background: #f2f2f2;
+  }
+  .pt-ticker-menu.is-open {
+    background: #111111;
+    color: #ffffff;
+  }
   .pt-ticker-caret {
-    display: block;
-    position: absolute;
-    left: 11px;
-    top: 0;
+    position: static;
     width: 11px;
     height: 7px;
   }

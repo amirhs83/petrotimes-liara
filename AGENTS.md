@@ -41,3 +41,13 @@
 - **جایگاه‌ها:** هر خبر به‌جز «آخرین اخبار/پربازدیدترین» یک جایگاه مشخص در سکشن‌های صفحه اصلی دارد (`HomeSection` + `SectionPlacement`؛ کلیدها: hero، videos، topnews، magazine، feature، energy، advertise1 («ادورتایز 1» — سه تصویر، از انرژی جدا شده)، advertise).
 - **دیتابیس دوگانه:** اسکیمای کانننیکال `prisma/schema.prisma` = PostgreSQL (پروداکشن لیارا/Neon). برای توسعه محلی سندباکس، `bun run db:local:push` نسخه SQLite می‌سازد (`prisma/schema.local.prisma` — فایل تولیدشده، دستی ویرایش نشود).
 - **تیکر قیمت:** طبق تصمیم کاربر فعلاً دست‌نخورده باقی می‌ماند (iframe واقعی سایت + fallback بومی).
+
+<!-- BEGIN:nextjs-agent-rules -->
+
+## This is NOT the Next.js you know
+
+This version has breaking changes — APIs, conventions, and file structure may all differ from your training data. Read the relevant guide in `node_modules/next/dist/docs/` (resolved from this file's directory; in monorepos the `next` package may not be visible from the repo root) before writing any code. Heed deprecation notices.
+
+This block is written and re-added by `next dev` — verify at `node_modules/next/dist/server/lib/generate-agent-files.js`. Removing it from a diff only re-creates the uncommitted change; committing it with your work keeps the tree clean.
+
+<!-- END:nextjs-agent-rules -->

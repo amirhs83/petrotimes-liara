@@ -229,10 +229,23 @@ export default function MediaPicker({
               className="w-full h-40 object-cover"
             />
           ) : (
-            <div className="w-full h-40 flex items-center justify-center bg-zinc-900 text-white gap-2">
-              <Film className="w-5 h-5" />
-              <span className="text-xs" dir="ltr">
-                {value.url}
+            <div className="relative w-full h-40 bg-zinc-900 overflow-hidden flex items-center justify-center">
+              <video
+                src={value.url}
+                autoPlay
+                muted
+                playsInline
+                className="w-full h-full object-cover"
+                onTimeUpdate={(e) => {
+                  if (e.currentTarget.currentTime >= 5) {
+                    e.currentTarget.currentTime = 0;
+                    e.currentTarget.play().catch(() => {});
+                  }
+                }}
+              />
+              <span className="absolute bottom-2 right-2 px-2 py-0.5 rounded bg-black/70 text-[10px] text-white flex items-center gap-1 backdrop-blur-sm pointer-events-none">
+                <Film className="w-3 h-3" />
+                پیش‌نمایش ویدیو (لوپ ۵ ثانیه)
               </span>
             </div>
           )}

@@ -2,6 +2,7 @@ import type { Article } from '@/lib/content';
 import { topNewsDateLine } from '@/lib/content/english-meta';
 import { CategoryChip, EnglishDateLine, Icon } from './Primitives';
 import { SmallPostCard } from './PostCards';
+import { VideoLoopPreview } from './VideoLoopPreview';
 
 /**
  * TV PETRO TIMES — dark overlay block (video featured post) + playlist.
@@ -28,9 +29,10 @@ export function TvSection({ player, playlist }: { player: Article; playlist: Art
           <article className="pt-overlay-post">
             <a href={player.url} className="pt-overlay-media" title={player.title} aria-label={player.title}>
               <span className="pt-media-ratio pt-ratio-4-3">
-                <span
-                  className="pt-bg-cover"
-                  style={{ backgroundImage: `url("${player.image ?? ''}")`, position: 'absolute', top: 0, right: 0 } as React.CSSProperties}
+                <VideoLoopPreview
+                  videoUrl={player.videoUrl}
+                  posterImage={player.image}
+                  durationSeconds={5}
                 />
               </span>
               <span className="pt-media-gradient" />
