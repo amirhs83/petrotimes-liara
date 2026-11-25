@@ -91,10 +91,16 @@ interface CacheShape {
   at: number;
 }
 
+interface TvLiveQuote {
+  close: number;
+  chgPct: number;
+  chgAbs: number;
+}
+
 let teCache: CacheShape | null = null;
-let tvCache: { items: Record<string, Quote>; at: number } | null = null;
+let tvCache: { items: Record<string, TvLiveQuote>; at: number } | null = null;
 let teInFlight: Promise<Record<string, Quote>> | null = null;
-let tvInFlight: Promise<Record<string, Quote>> | null = null;
+let tvInFlight: Promise<Record<string, TvLiveQuote>> | null = null;
 
 function stripTags(html: string): string {
   return html
@@ -202,7 +208,7 @@ function formatSigned(v: number, decimals: number, suffix = ""): string {
   return v > 0 ? `+${fixed}${suffix}` : `${fixed}${suffix}`;
 }
 
-async function fetchTradingViewLive(): Promise<Record<string, Quote>> {
+async function fetchTradingViewLive(): Promise<Record<string, TvLiveQuote>> {
   const tickers = Object.values(TV_SYMBOLS).map((v) => v.tv);
   const res = await fetch(TV_SCANNER_URL, {
     method: "POST",
@@ -222,7 +228,7 @@ async function fetchTradingViewLive(): Promise<Record<string, Quote>> {
     data?: Array<{ s?: string; d?: [number, number, number, string] }>;
   };
 
-  const out: Record<string, Quote> = {};
+  const out: Record<string, TvLiveQuote> = {};
   const byTv = new Map<string, [number, number, number, string]>();
   for (const row of json.data ?? []) {
     if (row.s && Array.isArray(row.d)) byTv.set(row.s, row.d);
@@ -233,36 +239,46 @@ async function fetchTradingViewLive(): Promise<Record<string, Quote>> {
     if (!d) continue;
     const [close, chgPct, chgAbs, mode] = d;
     if (mode !== "streaming" || !Number.isFinite(close)) continue;
-
-    // Anchor daily change to TradingEconomics settlement close when available
-    // and closely aligned (< 3%), so intraday ticks move smoothly from day's settlement.
-    const teSym = SYMBOLS[key];
-    const teQ = teCache?.quotes[teSym];
-    const tePrice = parseFiniteNum(teQ?.price);
-    const teChg = parseFiniteNum(teQ?.change);
-    let change = Number.isFinite(chgAbs) ? chgAbs : 0;
-    let percent = Number.isFinite(chgPct) ? chgPct : 0;
-
-    if (
-      tePrice !== null &&
-      teChg !== null &&
-      tePrice > 0 &&
-      Math.abs(close - tePrice) / tePrice < 0.03
-    ) {
-      const prevClose = tePrice - teChg;
-      if (prevClose > 0) {
-        change = close - prevClose;
-        percent = (change / prevClose) * 100;
-      }
-    }
-
     out[key] = {
-      price: close.toFixed(cfg.decimals),
-      change: formatSigned(change, cfg.chgDecimals),
-      percent: formatSigned(percent, 2, "%"),
+      close,
+      chgPct: Number.isFinite(chgPct) ? chgPct : 0,
+      chgAbs: Number.isFinite(chgAbs) ? chgAbs : 0,
     };
   }
   return out;
+}
+
+function formatTvOverlay(
+  key: string,
+  live: TvLiveQuote,
+  teQ?: Quote
+): Quote {
+  const cfg = TV_SYMBOLS[key];
+  const tePrice = parseFiniteNum(teQ?.price);
+  const teChg = parseFiniteNum(teQ?.change);
+  let change = live.chgAbs;
+  let percent = live.chgPct;
+
+  // Anchor daily change to TradingEconomics settlement close when available
+  // and closely aligned (< 3%), so intraday ticks move smoothly from day's settlement.
+  if (
+    tePrice !== null &&
+    teChg !== null &&
+    tePrice > 0 &&
+    Math.abs(live.close - tePrice) / tePrice < 0.03
+  ) {
+    const prevClose = tePrice - teChg;
+    if (prevClose > 0) {
+      change = live.close - prevClose;
+      percent = (change / prevClose) * 100;
+    }
+  }
+
+  return {
+    price: live.close.toFixed(cfg.decimals),
+    change: formatSigned(change, cfg.chgDecimals),
+    percent: formatSigned(percent, 2, "%"),
+  };
 }
 
 function refreshTeInBackground(): Promise<Record<string, Quote>> {
@@ -282,7 +298,7 @@ function refreshTeInBackground(): Promise<Record<string, Quote>> {
   return teInFlight;
 }
 
-function refreshTvInBackground(): Promise<Record<string, Quote>> {
+function refreshTvInBackground(): Promise<Record<string, TvLiveQuote>> {
   if (!tvInFlight) {
     tvInFlight = fetchTradingViewLive()
       .then((items) => {
@@ -333,18 +349,16 @@ export async function GET(req: Request) {
 
 function respond(
   teQuotes: Record<string, Quote>,
-  tvItems: Record<string, Quote>,
+  tvItems: Record<string, TvLiveQuote>,
   stale: boolean,
   updatedAt: string
 ) {
   const items = Object.entries(SYMBOLS).map(([key, sym]) => {
     const live = tvItems[key];
-    if (live?.price) {
+    if (live) {
       return {
         key,
-        price: live.price,
-        change: live.change,
-        percent: live.percent,
+        ...formatTvOverlay(key, live, teQuotes[sym]),
       };
     }
     return {
