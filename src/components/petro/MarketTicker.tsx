@@ -74,8 +74,8 @@ const LOOP_COPIES = 2;
 /* auto-scroll speed, px per second, right-to-left */
 const SCROLL_SPEED = 30;
 
-/* quote refresh cadence — matched to the /api/market server TTL (15s) */
-const QUOTES_POLL_MS = 15000;
+/* quote refresh cadence — matched to the fast live streaming TTL (4s) */
+const QUOTES_POLL_MS = 4000;
 
 export function MarketTicker({ items }: { items: TickerItem[] }) {
   const [quotes, setQuotes] = useState<Record<string, MarketQuote> | null>(null);
@@ -109,6 +109,7 @@ export function MarketTicker({ items }: { items: TickerItem[] }) {
   useEffect(() => {
     alive.current = true;
     const load = async () => {
+      if (typeof document !== 'undefined' && document.visibilityState === 'hidden') return;
       try {
         const res = await fetch('/api/market', { cache: 'no-store' });
         if (!res.ok) throw new Error(`market ${res.status}`);
@@ -122,11 +123,16 @@ export function MarketTicker({ items }: { items: TickerItem[] }) {
         if (alive.current) setFailed(true);
       }
     };
+    const onVisible = () => {
+      if (document.visibilityState === 'visible') load();
+    };
     load();
     const timer = setInterval(load, QUOTES_POLL_MS);
+    document.addEventListener('visibilitychange', onVisible);
     return () => {
       alive.current = false;
       clearInterval(timer);
+      document.removeEventListener('visibilitychange', onVisible);
     };
   }, []);
 
