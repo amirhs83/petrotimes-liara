@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import { db } from "@/lib/db";
 import { requireAdmin, isErrorResponse } from "@/lib/security";
 import { sectionPlacementsSchema } from "@/lib/validators";
+import { revalidatePublicSite } from "@/lib/revalidate-site";
 
 export const runtime = "nodejs";
 
@@ -86,6 +87,8 @@ export async function PUT(req: Request, { params }: Ctx) {
       },
     },
   });
+
+  revalidatePublicSite();
 
   return NextResponse.json({ ok: true, section: updated });
 }

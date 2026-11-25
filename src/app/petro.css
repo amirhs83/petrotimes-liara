@@ -1052,11 +1052,19 @@ a:hover { color: var(--c-a-hover); }
   touch-action: pan-y; /* horizontal scrub captured by JS, vertical page scroll stays native */
   user-select: none;
   -webkit-user-select: none;
+  /* Isolate viewport clipping onto its own GPU compositor layer across ALL
+     breakpoints (desktop included) so cards entering/exiting edges never
+     trigger main-thread clipping tears or partial glyph artifacts. */
+  transform: translateZ(0);
+  contain: layout paint;
+  isolation: isolate;
 }
 .pt-ticker-viewport.is-dragging { cursor: grabbing; }
 .pt-ticker-track {
   display: flex;
   align-items: center;
+  width: max-content;
+  flex-shrink: 0;
   will-change: transform;
   /* keep the moving layer on one compositor surface — no per-frame
      re-rasterization seams at the viewport clip edges */

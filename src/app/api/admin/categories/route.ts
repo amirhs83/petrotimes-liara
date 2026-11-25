@@ -3,6 +3,7 @@ import { db } from "@/lib/db";
 import { requireAdmin, isErrorResponse } from "@/lib/security";
 import { categoryCreateSchema } from "@/lib/validators";
 import { uniqueCategorySlug } from "@/lib/slug";
+import { revalidatePublicSite } from "@/lib/revalidate-site";
 
 export const runtime = "nodejs";
 
@@ -63,5 +64,6 @@ export async function POST(req: Request) {
   const category = await db.category.create({
     data: { name: parsed.data.name, slug, order },
   });
+  revalidatePublicSite();
   return NextResponse.json({ ok: true, category }, { status: 201 });
 }

@@ -3,6 +3,7 @@ import { db } from "@/lib/db";
 import { requireAdmin, isErrorResponse } from "@/lib/security";
 import { categoryUpdateSchema } from "@/lib/validators";
 import { uniqueCategorySlug } from "@/lib/slug";
+import { revalidatePublicSite } from "@/lib/revalidate-site";
 
 export const runtime = "nodejs";
 
@@ -58,6 +59,7 @@ export async function PUT(req: Request, { params }: Ctx) {
   if (parsed.data.order !== undefined) data.order = parsed.data.order;
 
   const category = await db.category.update({ where: { id }, data });
+  revalidatePublicSite();
   return NextResponse.json({ ok: true, category });
 }
 
@@ -88,5 +90,6 @@ export async function DELETE(req: Request, { params }: Ctx) {
   }
 
   await db.category.delete({ where: { id } });
+  revalidatePublicSite();
   return NextResponse.json({ ok: true });
 }

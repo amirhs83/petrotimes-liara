@@ -16,15 +16,31 @@ export interface StoredFile {
   provider: StorageProvider;
 }
 
-function getParspackConfig() {
-  const endpoint = process.env.PARSPACK_ENDPOINT;
-  const accessKey = process.env.PARSPACK_ACCESS_KEY;
-  const secretKey = process.env.PARSPACK_SECRET_KEY;
-  const bucket = process.env.PARSPACK_BUCKET;
-  if (endpoint && accessKey && secretKey && bucket) {
-    return { endpoint, accessKey, secretKey, bucket };
+function normalizeEndpoint(ep: string): string {
+  let e = ep.trim();
+  if (!e.startsWith("http://") && !e.startsWith("https://")) e = `https://${e}`;
+  return e.replace(/\/+$/, "");
+}
+
+function inferBucketFromEndpoint(endpoint: string): string | null {
+  try {
+    const host = new URL(normalizeEndpoint(endpoint)).hostname;
+    const match = /^([^.]+)\.parspack\.net$/i.exec(host);
+    return match ? match[1] : null;
+  } catch {
+    return null;
   }
-  return null;
+}
+
+function getParspackConfig() {
+  const endpoint = process.env.PARSPACK_ENDPOINT?.trim();
+  const accessKey = process.env.PARSPACK_ACCESS_KEY?.trim();
+  const secretKey = process.env.PARSPACK_SECRET_KEY?.trim();
+  if (!endpoint || !accessKey || !secretKey) return null;
+  const bucket =
+    process.env.PARSPACK_BUCKET?.trim() || inferBucketFromEndpoint(endpoint);
+  if (!bucket) return null;
+  return { endpoint, accessKey, secretKey, bucket };
 }
 
 export function getStorageProvider(): StorageProvider {
@@ -39,18 +55,12 @@ export function localFilePath(key: string): string {
   return path.join(LOCAL_UPLOAD_DIR, key);
 }
 
-function normalizeEndpoint(ep: string): string {
-  let e = ep.trim();
-  if (!e.startsWith("http://") && !e.startsWith("https://")) e = `https://${e}`;
-  return e.replace(/\/+$/, "");
-}
-
 async function getS3Client() {
   const cfg = getParspackConfig();
   if (!cfg) throw new Error("Parspack config missing");
   const { S3Client } = await import("@aws-sdk/client-s3");
   return new S3Client({
-    region: process.env.PARSPACK_REGION || "us-east-1",
+    region: process.env.PARSPACK_REGION?.trim() || "us-east-1",
     endpoint: normalizeEndpoint(cfg.endpoint),
     credentials: {
       accessKeyId: cfg.accessKey,
@@ -71,17 +81,27 @@ export async function uploadToStorage(
     const cfg = getParspackConfig()!;
     const { PutObjectCommand } = await import("@aws-sdk/client-s3");
     const client = await getS3Client();
-    await client.send(
-      new PutObjectCommand({
-        Bucket: cfg.bucket,
-        Key: key,
-        Body: data,
-        ContentType: contentType,
-      })
-    );
-    const base = normalizeEndpoint(cfg.endpoint);
-    // Parspack endpoint is per-bucket (https://c267562.parspack.net), so object URL is base + "/" + key
-    const url = `${base}/${key}`;
+    const putBase = {
+      Bucket: cfg.bucket,
+      Key: key,
+      Body: data,
+      ContentType: contentType,
+      CacheControl: "public, max-age=31536000, immutable",
+      ContentDisposition: "inline",
+    };
+    try {
+      await client.send(
+        new PutObjectCommand({ ...putBase, ACL: "public-read" })
+      );
+    } catch {
+      // Fallback if bucket enforces BucketOwnerEnforced / rejects x-amz-acl
+      await client.send(new PutObjectCommand(putBase));
+    }
+    const publicBase = process.env.PARSPACK_PUBLIC_URL?.trim()
+      ? normalizeEndpoint(process.env.PARSPACK_PUBLIC_URL)
+      : normalizeEndpoint(cfg.endpoint);
+    // Parspack endpoint is per-bucket (e.g. https://c472808.parspack.net), so object URL is base + "/" + key
+    const url = `${publicBase}/${key}`;
     return { key, url, provider };
   }
 

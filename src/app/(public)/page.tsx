@@ -1,5 +1,5 @@
 import { getHomepageData } from '@/lib/content';
-import { absoluteUrl, siteName, siteNameEn } from '@/lib/site';
+import { absoluteUrl, siteName, siteNameEn, siteTagline } from '@/lib/site';
 import { homepageGraph } from '@/lib/seo/jsonld';
 import { JsonLd } from '@/components/petro/JsonLd';
 import { OgImageSecureUrl } from '@/components/petro/RawSeoMeta';
@@ -17,8 +17,9 @@ import { EnergySection } from '@/components/petro/EnergySection';
 import { AdvertiseRow, AdvertiseOne } from '@/components/petro/AdvertiseRow';
 import { SiteFooter } from '@/components/petro/SiteFooter';
 
-// homepage reflects the latest published CMS content; cached briefly (ISR)
-export const revalidate = 60;
+// Dynamic SSR backed by a 30s in-memory cache + instant admin invalidation
+// so docker builds without runtime DB never bake an empty homepage HTML.
+export const dynamic = "force-dynamic";
 
 /**
  * Petro Times homepage — assembled from the backend-agnostic content layer.
@@ -50,6 +51,9 @@ export default async function Home() {
       </div>
 
       <main className="main-wrap">
+        <h1 className="pt-visuallyhidden">
+          {`${siteName} - ${siteNameEn} | ${siteTagline}`}
+        </h1>
         {/* ============================ SECTION A — TOP NEWS ============================ */}
         <div className="pt-section pt-section-topnews">
           <div className="pt-container">

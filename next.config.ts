@@ -12,7 +12,7 @@ const cspDirectives = [
   "style-src 'self' 'unsafe-inline'",
   // blob: needed by react-easy-crop (object URLs created for the crop tool)
   "img-src 'self' data: https: blob:",
-  "media-src 'self' https:",
+  "media-src 'self' https: blob:",
   "font-src 'self' data:",
   // market ticker iframe bridge polls same-origin; widget iframe = market host
   "connect-src 'self' https://market.petrotimes.ir",
@@ -62,7 +62,7 @@ const nextConfig: NextConfig = {
     remotePatterns: [
       { protocol: "https", hostname: "picsum.photos" },
       { protocol: "https", hostname: "**.public.blob.vercel-storage.com" },
-      { protocol: "https", hostname: "c267562.parspack.net" },
+      { protocol: "https", hostname: "c472808.parspack.net" },
       { protocol: "https", hostname: "**.parspack.net" },
       { protocol: "https", hostname: "petrotimes.ir" },
       { protocol: "https", hostname: "**.petrotimes.ir" },

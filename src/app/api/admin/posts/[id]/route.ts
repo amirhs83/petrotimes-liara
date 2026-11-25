@@ -10,6 +10,7 @@ import {
   writePlacements,
 } from "@/lib/placements";
 import { badRequest, validatePostPayload, postDataFromInput } from "@/lib/post-service";
+import { revalidatePublicSite } from "@/lib/revalidate-site";
 
 export const runtime = "nodejs";
 
@@ -108,6 +109,8 @@ export async function PUT(req: Request, { params }: Ctx) {
     return updated;
   });
 
+  revalidatePublicSite(post.slug);
+
   return NextResponse.json({ ok: true, id: post.id, slug: post.slug });
 }
 
@@ -116,7 +119,7 @@ export async function DELETE(req: Request, { params }: Ctx) {
   if (isErrorResponse(guard)) return guard.response;
 
   const { id } = await params;
-  const existing = await db.post.findUnique({ where: { id }, select: { id: true } });
+  const existing = await db.post.findUnique({ where: { id }, select: { id: true, slug: true } });
   if (!existing) {
     return NextResponse.json(
       { ok: false, error: "پست یافت نشد" },
@@ -126,5 +129,6 @@ export async function DELETE(req: Request, { params }: Ctx) {
 
   // placements + tag links cascade via schema; media library items are kept
   await db.post.delete({ where: { id } });
+  revalidatePublicSite(existing.slug);
   return NextResponse.json({ ok: true });
 }

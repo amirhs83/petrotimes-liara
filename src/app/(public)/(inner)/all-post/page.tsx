@@ -5,7 +5,7 @@ import { absoluteUrl, rssAlternates } from "@/lib/site";
 import { archiveGraph, archiveBreadcrumbs } from "@/lib/seo/jsonld";
 import { JsonLd } from "@/components/petro/JsonLd";
 
-export const revalidate = 60;
+export const dynamic = "force-dynamic";
 
 export const metadata: Metadata = {
   title: "همه اخبار",

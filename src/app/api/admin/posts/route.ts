@@ -11,6 +11,7 @@ import {
   writePlacements,
 } from "@/lib/placements";
 import { badRequest, validatePostPayload, postDataFromInput } from "@/lib/post-service";
+import { revalidatePublicSite } from "@/lib/revalidate-site";
 import { containsInsensitive } from "@/lib/db-text";
 
 export const runtime = "nodejs";
@@ -118,6 +119,8 @@ export async function POST(req: Request) {
     await writePlacements(tx, byKey, created.id, placements);
     return created;
   });
+
+  revalidatePublicSite(post.slug);
 
   return NextResponse.json(
     { ok: true, id: post.id, slug: post.slug },

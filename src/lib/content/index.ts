@@ -34,15 +34,33 @@ export type ContentMode = 'cms' | 'snapshot';
  * blank page. Order: CMS → lastGood → snapshot → throw.
  */
 let lastGood: HomepageData | null = null;
+let lastGoodAt = 0;
+const HOMEPAGE_CACHE_TTL_MS = 30_000;
+
+/** Clears the in-memory homepage cache so admin changes publish immediately. */
+export function invalidateHomepageCache() {
+  lastGoodAt = 0;
+}
 
 export async function getHomepageData(): Promise<HomepageData> {
   const mode = (process.env.CONTENT_API_MODE as ContentMode | undefined) ?? 'cms';
 
   if (mode === 'snapshot') return getSnapshot();
 
+  const now = Date.now();
+  if (lastGood && now - lastGoodAt < HOMEPAGE_CACHE_TTL_MS) {
+    return lastGood;
+  }
+
   try {
     const data = await buildHomepageData();
-    lastGood = data;
+    const hasContent =
+      Boolean(data.sections.heroMain?.title) ||
+      data.sections.footer.latest.length > 0;
+    if (hasContent) {
+      lastGood = data;
+      lastGoodAt = now;
+    }
     return data;
   } catch (err) {
     console.error('[content] CMS build failed:', err);

@@ -67,10 +67,9 @@ const CARD_ICONS: Record<string, string> = {
 
 const PRIORITY = ['methanol', 'polyethylene', 'urea'];
 
-/* copies of the card set for the seamless wrap — 3 covers viewports up to
-   twice the set width (the dataset is the fixed 15-product contract, so one
-   set is ≈1.7k/2.7k px wide at mobile/desktop breakpoints) */
-const LOOP_COPIES = 3;
+/* two copies cover any mobile or desktop viewport (> 2560px) seamlessly while
+   keeping the composited GPU track compact below mobile texture tile limits */
+const LOOP_COPIES = 2;
 
 /* auto-scroll speed, px per second, right-to-left */
 const SCROLL_SPEED = 30;
@@ -142,140 +141,158 @@ export function MarketTicker({ items }: { items: TickerItem[] }) {
   /* ------------------------------------------------ loop machinery ------ */
   const viewportRef = useRef<HTMLDivElement | null>(null);
   const trackRef = useRef<HTMLDivElement | null>(null);
+  const animRef = useRef<Animation | null>(null);
   const posRef = useRef(0);
   const periodRef = useRef(0); /* one set width + gap, px */
   const draggingRef = useRef(false);
+  const hoverRef = useRef(false);
   const dragStartX = useRef(0);
   const dragStartPos = useRef(0);
   const [dragging, setDragging] = useState(false);
 
-  /* The applied offset is snapped to whole CSS pixels: the float accumulator
-     stays exact (time-based), but translate3d never lands on a half-pixel —
-     fractional offsets make the compositor re-sample glyphs/card edges every
-     frame (subpixel AA), which reads as broken "chunky" pixels while the
-     row slides. 30px/s moves at most 1px per step, so rounding is invisible
-     in motion but keeps text and card borders on the pixel grid. */
-  const applyPos = useCallback(() => {
-    const track = trackRef.current;
-    if (track) track.style.transform = `translate3d(${Math.round(posRef.current)}px, 0, 0)`;
+  const wrapPos = useCallback((p: number, period: number) => {
+    if (period <= 0) return p;
+    let v = p % period;
+    if (v > 0) v -= period;
+    if (Object.is(v, -0)) v = 0;
+    return v;
   }, []);
 
-  /* wrap the offset into [-period, 0) so any drag position lands on the
-     equivalent seamless spot */
-  const normalize = useCallback(() => {
-    const period = periodRef.current;
-    if (period <= 0) return;
-    while (posRef.current <= -period) posRef.current += period;
-    while (posRef.current > 0) posRef.current -= period;
-    applyPos();
-  }, [applyPos]);
-
-  /* Mobile motion hardening (client report: stutter at the strip edges where
-     cards cross the clip). `width: max-content` resolves to fractional
-     glyph-advance widths — every card edge then sits on a subpixel phase,
-     so the integer-snapped marquee transform keeps re-sampling edges while
-     a card crosses the clip. Fix: snap every card's natural width UP to a
-     whole CSS pixel (ceil — the box always contains the full row, so no
-     data is ever clipped; the §09 min-widths still clamp from below).
-     Desktop/tablet keep their fixed flex-basis widths: there the inline
-     width is cleared (and would be ignored anyway — basis ≠ auto). */
-  const snapCardWidths = useCallback(() => {
+  const readLivePos = useCallback((): number => {
     const track = trackRef.current;
-    if (!track) return;
-    const cards = Array.from(track.querySelectorAll<HTMLElement>('.pt-ticker-card'));
-    if (window.matchMedia('(min-width: 768px)').matches) {
-      for (const el of cards) {
-        if (el.style.width) el.style.width = '';
+    if (!track) return posRef.current;
+    const cs = window.getComputedStyle(track).transform;
+    if (cs && cs !== 'none') {
+      try {
+        const m = new DOMMatrixReadOnly(cs);
+        if (Number.isFinite(m.m41)) return m.m41;
+      } catch {
+        // Ignore invalid transform matrix
       }
+    }
+    return posRef.current;
+  }, []);
+
+  const applyManualPos = useCallback(() => {
+    const track = trackRef.current;
+    if (track) track.style.transform = `translate3d(${posRef.current.toFixed(2)}px, 0, 0)`;
+  }, []);
+
+  /* Freeze smoothly at the exact live compositor offset (avoids Chromium's
+     WAAPI anim.pause()/play() pending-startTime teleport bug). */
+  const pauseToStaticPos = useCallback(() => {
+    if (animRef.current) {
+      posRef.current = wrapPos(readLivePos(), periodRef.current);
+      animRef.current.cancel();
+      animRef.current = null;
+    }
+    applyManualPos();
+  }, [readLivePos, wrapPos, applyManualPos]);
+
+  /* Start/sync the marquee on the browser's GPU compositor thread via Web
+     Animations API — runs at full hardware vsync (60/90/120Hz) with zero
+     main-thread frame drops or integer rounding stutter. */
+  const syncAnimation = useCallback(() => {
+    const track = trackRef.current;
+    const period = periodRef.current;
+    if (!track || period <= 0) return;
+
+    if (animRef.current) {
+      posRef.current = readLivePos();
+      animRef.current.cancel();
+      animRef.current = null;
+    }
+
+    posRef.current = wrapPos(posRef.current, period);
+
+    if (draggingRef.current || hoverRef.current || typeof track.animate !== 'function') {
+      applyManualPos();
       return;
     }
-    for (const el of cards) el.style.width = ''; /* clear → natural max-content */
-    const widths = cards.map((el) => el.getBoundingClientRect().width); /* read pass */
-    for (let i = 0; i < cards.length; i++) {
-      cards[i].style.width = `${Math.ceil(widths[i])}px`; /* write pass: whole px */
-    }
-  }, []);
 
-  /* the loop period = distance between the first two set wrappers
-     (set width + inter-set gap — works for every breakpoint). Measured
-     from getBoundingClientRect (fractional-exact — the current translate
-     shifts both rects equally, so the difference is the exact pitch);
-     the old integer-rounded offsetLeft left a ≤0.5px error that surfaced
-     as a subpixel jump at the loop seam. */
+    track.style.transform = '';
+    const durationMs = (period / SCROLL_SPEED) * 1000;
+    const anim = track.animate(
+      [
+        { transform: 'translate3d(0px, 0, 0)' },
+        { transform: `translate3d(${-period}px, 0, 0)` },
+      ],
+      {
+        duration: durationMs,
+        iterations: Infinity,
+        easing: 'linear',
+      }
+    );
+    anim.currentTime = ((-posRef.current) / period) * durationMs;
+    animRef.current = anim;
+  }, [readLivePos, wrapPos, applyManualPos]);
+
+  /* Loop period = distance between first two set wrappers. Only recreate the
+     compositor animation when not yet started or when layout shifts meaningfully
+     (> 4px, e.g., breakpoint flip or initial font load — prevents restarting on
+     tiny 1px quote text updates). */
   const measure = useCallback(() => {
     const track = trackRef.current;
     if (!track || track.children.length < 2) return;
     const a = track.children[0] as HTMLElement;
     const b = track.children[1] as HTMLElement;
     const period = b.getBoundingClientRect().left - a.getBoundingClientRect().left;
-    if (period > 0) periodRef.current = period;
-    normalize();
-  }, [normalize]);
+    if (period > 0 && (periodRef.current === 0 || Math.abs(period - periodRef.current) > 4)) {
+      periodRef.current = period;
+      syncAnimation();
+    }
+  }, [syncAnimation]);
 
-  /* snap widths first, then re-measure the period (widths change the pitch) */
-  const remeasure = useCallback(() => {
-    snapCardWidths();
-    measure();
-  }, [snapCardWidths, measure]);
-
-  /* keep the period fresh: mount, viewport resize, and any layout change
-     inside the row (quotes arriving, fonts loading) via ResizeObserver.
-     The RO callback is measure-only (snap is idempotent; letting it run
-     here too would just add one redundant pass per resize). */
   useEffect(() => {
-    remeasure();
+    measure();
     const ro = new ResizeObserver(measure);
     if (trackRef.current) ro.observe(trackRef.current);
     if (viewportRef.current) ro.observe(viewportRef.current);
-    window.addEventListener('resize', remeasure);
-    /* widths depend on the real font metrics — re-snap once fonts land —
-       and again when the phone/desktop breakpoint flips */
+    window.addEventListener('resize', measure);
     let alive = true;
     document.fonts?.ready.then(() => {
-      if (alive) remeasure();
+      if (alive) measure();
     });
     const mq = window.matchMedia('(min-width: 768px)');
-    const onFlip = () => remeasure();
+    const onFlip = () => {
+      periodRef.current = 0;
+      measure();
+    };
     mq.addEventListener?.('change', onFlip);
     return () => {
       alive = false;
       ro.disconnect();
-      window.removeEventListener('resize', remeasure);
+      window.removeEventListener('resize', measure);
       mq.removeEventListener?.('change', onFlip);
+      animRef.current?.cancel();
+      animRef.current = null;
     };
-  }, [remeasure, measure]);
+  }, [measure]);
 
-  /* quotes arriving change card content → card widths change → re-snap */
+  /* Fallback rAF loop only when Web Animations API isn't supported */
   useEffect(() => {
-    remeasure();
-  }, [remeasure, quotes, failed]);
-
-  /* auto-scroll: right-to-left, time-based (frame-rate independent),
-     paused while an active drag scrubs the row AND while a mouse pointer
-     hovers the strip (index.php parity: mouseenter/mouseleave cleared and
-     restored the interval). Touch pointers never pause — the marquee must
-     keep running on phones (the frozen-strip client report). */
-  const hoverRef = useRef(false);
-  useEffect(() => {
+    const track = trackRef.current;
+    if (!track || typeof track.animate === 'function') return;
     let raf = 0;
     let last: number | null = null;
     const tick = (ts: number) => {
       if (last === null) last = ts;
-      const dt = Math.min(ts - last, 100); /* clamp tab-switch jumps */
+      const dt = Math.min(ts - last, 100);
       last = ts;
       if (!draggingRef.current && !hoverRef.current && periodRef.current > 0) {
-        posRef.current -= (SCROLL_SPEED * dt) / 1000;
-        normalize();
+        posRef.current = wrapPos(posRef.current - (SCROLL_SPEED * dt) / 1000, periodRef.current);
+        applyManualPos();
       }
       raf = requestAnimationFrame(tick);
     };
     raf = requestAnimationFrame(tick);
     return () => cancelAnimationFrame(raf);
-  }, [normalize]);
+  }, [wrapPos, applyManualPos]);
 
   /* ------------------------------------------------ scrubbing ----------- */
   const onPointerDown = (e: React.PointerEvent<HTMLDivElement>) => {
     if (e.pointerType === 'mouse' && e.button !== 0) return;
+    pauseToStaticPos();
     draggingRef.current = true;
     dragStartX.current = e.clientX;
     dragStartPos.current = posRef.current;
@@ -284,8 +301,8 @@ export function MarketTicker({ items }: { items: TickerItem[] }) {
   };
   const onPointerMove = (e: React.PointerEvent<HTMLDivElement>) => {
     if (!draggingRef.current) return;
-    posRef.current = dragStartPos.current + (e.clientX - dragStartX.current);
-    normalize();
+    posRef.current = wrapPos(dragStartPos.current + (e.clientX - dragStartX.current), periodRef.current);
+    applyManualPos();
   };
   const endDrag = (e: React.PointerEvent<HTMLDivElement>) => {
     if (!draggingRef.current) return;
@@ -293,6 +310,7 @@ export function MarketTicker({ items }: { items: TickerItem[] }) {
     setDragging(false);
     const vp = viewportRef.current;
     if (vp && vp.hasPointerCapture(e.pointerId)) vp.releasePointerCapture(e.pointerId);
+    syncAnimation();
   };
 
   return (
@@ -326,12 +344,16 @@ export function MarketTicker({ items }: { items: TickerItem[] }) {
           role="region"
           aria-label="Market prices — auto-scrolling loop, drag to browse"
           onPointerEnter={(e) => {
-            /* index.php hover-pause, mouse pointers only (touch devices
-               keep the strip running — see the motion notes above) */
-            if (e.pointerType === 'mouse') hoverRef.current = true;
+            if (e.pointerType === 'mouse') {
+              hoverRef.current = true;
+              pauseToStaticPos();
+            }
           }}
           onPointerLeave={(e) => {
-            if (e.pointerType === 'mouse') hoverRef.current = false;
+            if (e.pointerType === 'mouse') {
+              hoverRef.current = false;
+              if (!draggingRef.current) syncAnimation();
+            }
           }}
           onPointerDown={onPointerDown}
           onPointerMove={onPointerMove}
