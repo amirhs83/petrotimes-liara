@@ -12,7 +12,8 @@
     "db:migrate": "prisma migrate dev",
     "db:reset": "prisma migrate reset",
     "db:local:push": "node scripts/db-local.mjs && prisma generate --schema=prisma/schema.local.prisma && prisma db push --schema=prisma/schema.local.prisma --accept-data-loss",
-    "db:seed": "bun prisma/seed.ts"
+    "db:seed": "bun prisma/seed.ts",
+    "db:seed:node": "tsc prisma/seed.ts --outDir .seed-dist --module commonjs --target es2020 --esModuleInterop --skipLibCheck --moduleResolution node && node .seed-dist/seed.js"
   },
   "dependencies": {
     "@aws-sdk/client-s3": "^3.1175.0",

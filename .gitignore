@@ -63,6 +63,7 @@ server.log
 
 # generated sqlite variant of the prisma schema
 /prisma/schema.local.prisma
+/.seed-dist/
 
 # sandbox-only directories (not part of the app)
 /skills/
