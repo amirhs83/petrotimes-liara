@@ -74,8 +74,8 @@ const LOOP_COPIES = 2;
 /* auto-scroll speed, px per second, right-to-left */
 const SCROLL_SPEED = 30;
 
-/* quote refresh cadence — matched to the fast live streaming TTL (4s) */
-const QUOTES_POLL_MS = 4000;
+/* quote refresh cadence — matches the PHP ticker UI (5s poll against server cache) */
+const QUOTES_POLL_MS = 5000;
 
 export function MarketTicker({ items }: { items: TickerItem[] }) {
   const [quotes, setQuotes] = useState<Record<string, MarketQuote> | null>(null);

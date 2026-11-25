@@ -66,18 +66,7 @@ const PAGES = [
   "https://tradingeconomics.com/commodity/copper",       // copper (own main row)
 ];
 
-/* Streaming CFD symbols on TradingView public scanner (zero 60s CloudFront
-   cache). Mapped strictly to instruments whose real-time feed matches the
-   exact PetroTimes benchmark prices cleanly. */
-const TV_SCANNER_URL = "https://scanner.tradingview.com/cfd/scan";
-const TV_SYMBOLS: Record<string, { tv: string; decimals: number; chgDecimals: number }> = {
-  "crude-oil": { tv: "FX:USOIL", decimals: 2, chgDecimals: 3 },
-  "brent-crude-oil": { tv: "FX:UKOIL", decimals: 2, chgDecimals: 3 },
-  "copper": { tv: "OANDA:XCUUSD", decimals: 4, chgDecimals: 4 },
-};
-
-const TE_CACHE_TTL_MS = 10_000; // TE CloudFront caches ~60s; refresh promptly on rollover
-const LIVE_CACHE_TTL_MS = 3_000; // Real-time streaming CFD feed cache (3s)
+const CACHE_TTL_MS = 10_000; // TradingEconomics CloudFront caches ~60s; refresh in background every 10s to catch updates promptly
 
 interface Quote {
   price: string | null;
@@ -89,18 +78,11 @@ interface CacheShape {
   /** key → quote (real values only) */
   quotes: Record<string, Quote>;
   at: number;
+  stale: boolean;
 }
 
-interface TvLiveQuote {
-  close: number;
-  chgPct: number;
-  chgAbs: number;
-}
-
-let teCache: CacheShape | null = null;
-let tvCache: { items: Record<string, TvLiveQuote>; at: number } | null = null;
-let teInFlight: Promise<Record<string, Quote>> | null = null;
-let tvInFlight: Promise<Record<string, TvLiveQuote>> | null = null;
+let cache: CacheShape | null = null;
+let inFlight: Promise<CacheShape | null> | null = null;
 
 function stripTags(html: string): string {
   return html
@@ -197,122 +179,26 @@ function hasRealData(quotes: Record<string, Quote>): boolean {
   return Object.values(quotes).some((q) => q.price !== null && q.price !== "N/A");
 }
 
-function parseFiniteNum(v: string | null | undefined): number | null {
-  if (!v) return null;
-  const n = Number(v.replace(/[+,%\s,]/g, ""));
-  return Number.isFinite(n) ? n : null;
-}
-
-function formatSigned(v: number, decimals: number, suffix = ""): string {
-  const fixed = v.toFixed(decimals);
-  return v > 0 ? `+${fixed}${suffix}` : `${fixed}${suffix}`;
-}
-
-async function fetchTradingViewLive(): Promise<Record<string, TvLiveQuote>> {
-  const tickers = Object.values(TV_SYMBOLS).map((v) => v.tv);
-  const res = await fetch(TV_SCANNER_URL, {
-    method: "POST",
-    cache: "no-store",
-    signal: AbortSignal.timeout(3_000),
-    headers: {
-      "Content-Type": "application/json",
-      "User-Agent": "Mozilla/5.0",
-    },
-    body: JSON.stringify({
-      symbols: { tickers },
-      columns: ["close", "change", "change_abs", "update_mode"],
-    }),
-  });
-  if (!res.ok) throw new Error(`TV ${res.status}`);
-  const json = (await res.json()) as {
-    data?: Array<{ s?: string; d?: [number, number, number, string] }>;
-  };
-
-  const out: Record<string, TvLiveQuote> = {};
-  const byTv = new Map<string, [number, number, number, string]>();
-  for (const row of json.data ?? []) {
-    if (row.s && Array.isArray(row.d)) byTv.set(row.s, row.d);
-  }
-
-  for (const [key, cfg] of Object.entries(TV_SYMBOLS)) {
-    const d = byTv.get(cfg.tv);
-    if (!d) continue;
-    const [close, chgPct, chgAbs, mode] = d;
-    if (mode !== "streaming" || !Number.isFinite(close)) continue;
-    out[key] = {
-      close,
-      chgPct: Number.isFinite(chgPct) ? chgPct : 0,
-      chgAbs: Number.isFinite(chgAbs) ? chgAbs : 0,
-    };
-  }
-  return out;
-}
-
-function formatTvOverlay(
-  key: string,
-  live: TvLiveQuote,
-  teQ?: Quote
-): Quote {
-  const cfg = TV_SYMBOLS[key];
-  const tePrice = parseFiniteNum(teQ?.price);
-  const teChg = parseFiniteNum(teQ?.change);
-  let change = live.chgAbs;
-  let percent = live.chgPct;
-
-  // Anchor daily change to TradingEconomics settlement close when available
-  // and closely aligned (< 3%), so intraday ticks move smoothly from day's settlement.
-  if (
-    tePrice !== null &&
-    teChg !== null &&
-    tePrice > 0 &&
-    Math.abs(live.close - tePrice) / tePrice < 0.03
-  ) {
-    const prevClose = tePrice - teChg;
-    if (prevClose > 0) {
-      change = live.close - prevClose;
-      percent = (change / prevClose) * 100;
-    }
-  }
-
-  return {
-    price: live.close.toFixed(cfg.decimals),
-    change: formatSigned(change, cfg.chgDecimals),
-    percent: formatSigned(percent, 2, "%"),
-  };
-}
-
-function refreshTeInBackground(): Promise<Record<string, Quote>> {
-  if (!teInFlight) {
-    teInFlight = scrapeAll()
+function refreshInBackground(): Promise<CacheShape | null> {
+  if (!inFlight) {
+    inFlight = scrapeAll()
       .then((quotes) => {
         if (hasRealData(quotes)) {
-          teCache = { quotes, at: Date.now() };
+          cache = { quotes, at: Date.now(), stale: false };
+          return cache;
         }
-        return quotes;
+        if (cache) cache = { ...cache, stale: true };
+        return cache;
       })
-      .catch(() => teCache?.quotes ?? {})
+      .catch(() => {
+        if (cache) cache = { ...cache, stale: true };
+        return cache;
+      })
       .finally(() => {
-        teInFlight = null;
+        inFlight = null;
       });
   }
-  return teInFlight;
-}
-
-function refreshTvInBackground(): Promise<Record<string, TvLiveQuote>> {
-  if (!tvInFlight) {
-    tvInFlight = fetchTradingViewLive()
-      .then((items) => {
-        if (Object.keys(items).length > 0) {
-          tvCache = { items, at: Date.now() };
-        }
-        return items;
-      })
-      .catch(() => tvCache?.items ?? {})
-      .finally(() => {
-        tvInFlight = null;
-      });
-  }
-  return tvInFlight;
+  return inFlight;
 }
 
 export async function GET(req: Request) {
@@ -321,53 +207,26 @@ export async function GET(req: Request) {
   if (!isSameOrigin(req)) return forbiddenOrigin();
 
   const now = Date.now();
-  const teStale = !teCache || now - teCache.at >= TE_CACHE_TTL_MS;
-  const tvStale = !tvCache || now - tvCache.at >= LIVE_CACHE_TTL_MS;
-
-  const teJob = teStale ? refreshTeInBackground() : null;
-  const tvJob = tvStale ? refreshTvInBackground() : null;
-
-  // Cold boot: wait briefly for both sources so initial cards populate cleanly.
-  // Warm path: only wait briefly (~1.5s max) on fast live feed if stale, never
-  // blocking user polls on slow 4-page TradingEconomics scrapes.
-  if (!teCache && teJob) {
-    await Promise.race([
-      Promise.allSettled([teJob, tvJob].filter(Boolean)),
-      new Promise((r) => setTimeout(r, 4_000)),
-    ]);
-  } else if (tvJob) {
-    await Promise.race([tvJob, new Promise((r) => setTimeout(r, 1_500))]);
+  if (!cache) {
+    await refreshInBackground();
+  } else if (now - cache.at >= CACHE_TTL_MS) {
+    // Warm path: serve current snapshot immediately and revalidate in background
+    void refreshInBackground();
   }
 
-  const teQuotes = teCache?.quotes ?? {};
-  const tvItems = tvCache?.items ?? {};
-  const updatedAtMs = Math.max(teCache?.at ?? 0, tvCache?.at ?? 0) || now;
-  const stale = !teCache && Object.keys(tvItems).length === 0;
-
-  return respond(teQuotes, tvItems, stale, new Date(updatedAtMs).toISOString());
+  if (cache) {
+    return respond(cache.quotes, cache.stale, new Date(cache.at).toISOString());
+  }
+  return respond({}, true, new Date(now).toISOString());
 }
 
-function respond(
-  teQuotes: Record<string, Quote>,
-  tvItems: Record<string, TvLiveQuote>,
-  stale: boolean,
-  updatedAt: string
-) {
-  const items = Object.entries(SYMBOLS).map(([key, sym]) => {
-    const live = tvItems[key];
-    if (live) {
-      return {
-        key,
-        ...formatTvOverlay(key, live, teQuotes[sym]),
-      };
-    }
-    return {
-      key,
-      price: teQuotes[sym]?.price ?? null,
-      change: teQuotes[sym]?.change ?? null,
-      percent: teQuotes[sym]?.percent ?? null,
-    };
-  });
+function respond(quotes: Record<string, Quote>, stale: boolean, updatedAt: string) {
+  const items = Object.entries(SYMBOLS).map(([key, sym]) => ({
+    key,
+    price: quotes[sym]?.price ?? null,
+    change: quotes[sym]?.change ?? null,
+    percent: quotes[sym]?.percent ?? null,
+  }));
   return NextResponse.json(
     { ok: true, items, stale, updatedAt },
     { headers: { "Cache-Control": "no-store" } }
