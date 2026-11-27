@@ -81,13 +81,15 @@ export async function uploadToStorage(
     const cfg = getParspackConfig()!;
     const { PutObjectCommand } = await import("@aws-sdk/client-s3");
     const client = await getS3Client();
+    // Note: intentionally omit ContentDisposition — Parspack's OCDN/2.0 proxy
+    // appends its own Content-Disposition header, and sending a second one
+    // causes Chromium to reject media with ERR_RESPONSE_HEADERS_MULTIPLE_CONTENT_DISPOSITION.
     const putBase = {
       Bucket: cfg.bucket,
       Key: key,
       Body: data,
       ContentType: contentType,
       CacheControl: "public, max-age=31536000, immutable",
-      ContentDisposition: "inline",
     };
     try {
       await client.send(
